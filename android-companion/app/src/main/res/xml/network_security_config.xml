@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Local dev only: the emulator reaches the host machine's `next dev`
+     server over plain HTTP via the 10.0.2.2 alias. Point BASE_URL at the
+     real https://guardia-seven.vercel.app deployment for anything beyond
+     testing and this file becomes unnecessary. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

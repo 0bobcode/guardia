@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Guardia Companion</string>
+    <string name="accessibility_service_description">Guardia Companion reads text shown inside Gemini, ChatGPT, and Claude on this device and sends it to the linked parent\'s Guardia dashboard, so the parent can review what was said. It does not change what those apps say or do.</string>
+</resources>

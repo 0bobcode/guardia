@@ -129,6 +129,47 @@ export async function addAppToChildAction(formData: FormData) {
   redirect("/trusted/settings?appadded=1");
 }
 
+const PAIR_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
+
+function randomPairCode(): string {
+  let code = "";
+  for (let i = 0; i < 6; i++) code += PAIR_CODE_CHARS[Math.floor(Math.random() * PAIR_CODE_CHARS.length)];
+  return code;
+}
+
+export async function addDevicePairingAction(formData: FormData) {
+  const session = await requireActionUser("PARENT");
+
+  const studentId = String(formData.get("studentId"));
+  const student = await prisma.student.findUnique({ where: { id: studentId } });
+  if (!student || student.parentId !== session.user.id) throw new Error("Not found");
+
+  let pairCode = randomPairCode();
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const existing = await prisma.devicePairing.findUnique({ where: { pairCode } });
+    if (!existing) break;
+    pairCode = randomPairCode();
+  }
+
+  await prisma.devicePairing.create({ data: { studentId, pairCode } });
+
+  revalidatePath("/trusted/settings");
+  redirect(`/trusted/settings?paired=${pairCode}`);
+}
+
+export async function removeDevicePairingAction(formData: FormData) {
+  const session = await requireActionUser("PARENT");
+
+  const pairingId = String(formData.get("pairingId"));
+  const pairing = await prisma.devicePairing.findUnique({ where: { id: pairingId }, include: { student: true } });
+  if (!pairing || pairing.student.parentId !== session.user.id) throw new Error("Not found");
+
+  await prisma.devicePairing.delete({ where: { id: pairingId } });
+
+  revalidatePath("/trusted/settings");
+  redirect("/trusted/settings?deviceremoved=1");
+}
+
 export async function removeAppFromChildAction(formData: FormData) {
   const session = await requireActionUser("PARENT");
 

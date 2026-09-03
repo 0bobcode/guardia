@@ -84,6 +84,24 @@ model Student {
   scanEvents     ScanEvent[]
   consentRequests ConsentRequest[]
   aiSessions     AiSession[]
+  devicePairings DevicePairing[]
+}
+
+// A phone enrolled in TrustEd's device monitor. Created unpaired (a short
+// code shown in the dashboard); the companion Android app exchanges that
+// code for a long-lived token on first launch, then authenticates future
+// ingest calls with the token.
+model DevicePairing {
+  id         String    @id @default(cuid())
+  pairCode   String    @unique
+  token      String    @unique @default(cuid())
+  deviceName String?
+  createdAt  DateTime  @default(now())
+  pairedAt   DateTime?
+  lastSeenAt DateTime?
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
 }
 
 // AI apps / platforms integrated with GuardRail (e.g. Tutorly AI, MathBot K-5)

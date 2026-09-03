@@ -4,12 +4,15 @@ import { prisma } from "@/lib/db";
 import { Toast } from "@/components/Toast";
 import { ProviderBadge } from "@/components/ProviderBadge";
 import { providerLabel, providerShortLabel } from "@/lib/aiProviders";
+import { formatDateTime } from "@/lib/format";
 import {
   updateDailyLimitAction,
   addChildAction,
   removeChildAction,
   addAppToChildAction,
   removeAppFromChildAction,
+  addDevicePairingAction,
+  removeDevicePairingAction,
 } from "./actions";
 
 const LIMIT_OPTIONS = [0.5, 1, 1.5, 2, 3, 4, 6];
@@ -30,14 +33,17 @@ const ERRORS: Record<string, string> = {
 export default async function TrustedSettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; paired?: string }>;
 }) {
   const session = await requireRole("PARENT");
   const parentId = session!.user.id;
   const params = await searchParams;
   const students = await prisma.student.findMany({
     where: { parentId },
-    include: { enrollments: { include: { app: true } } },
+    include: {
+      enrollments: { include: { app: true } },
+      devicePairings: { orderBy: { createdAt: "desc" } },
+    },
     orderBy: { createdAt: "asc" },
   });
 
@@ -172,6 +178,71 @@ export default async function TrustedSettingsPage({
                 </button>
               </form>
             )}
+
+            <div className="mt-3 pt-3 border-t border-app-border">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-semibold text-app-text">Device monitor</p>
+                <form action={addDevicePairingAction}>
+                  <input type="hidden" name="studentId" value={student.id} />
+                  <button
+                    type="submit"
+                    className="text-xs font-semibold px-3 py-1.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] transition-colors"
+                  >
+                    Pair a device
+                  </button>
+                </form>
+              </div>
+              <p className="text-xs text-app-muted mb-2">
+                Install the Guardia companion app on {student.name.split(" ")[0]}&apos;s phone to
+                monitor real AI apps directly on the device.
+              </p>
+
+              {params.paired && student.devicePairings.some((d) => d.pairCode === params.paired) && (
+                <div className="bg-app-teal-soft border border-app-teal/30 rounded-md px-3 py-3 mb-2">
+                  <p className="text-xs text-app-muted mb-1">
+                    Open the Guardia companion app on the phone and enter this code:
+                  </p>
+                  <p className="text-2xl font-bold tracking-[0.3em] text-app-teal font-mono">{params.paired}</p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                {student.devicePairings.map((d) => (
+                  <div
+                    key={d.id}
+                    className="flex items-center justify-between text-xs border border-app-border rounded-md px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      <span className="text-app-text font-medium">
+                        {d.deviceName || (d.pairedAt ? "Unnamed device" : `Code ${d.pairCode} — waiting`)}
+                      </span>
+                      <span className="text-app-faint block">
+                        {d.pairedAt
+                          ? d.lastSeenAt
+                            ? `Last active ${formatDateTime(d.lastSeenAt)}`
+                            : "Paired, no activity yet"
+                          : "Not paired yet"}
+                      </span>
+                    </div>
+                    <form action={removeDevicePairingAction}>
+                      <input type="hidden" name="pairingId" value={d.id} />
+                      <button
+                        type="submit"
+                        title="Remove device"
+                        className="text-app-faint hover:text-red-400 transition-colors p-1 shrink-0"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                ))}
+                {student.devicePairings.length === 0 && (
+                  <p className="text-xs text-app-faint py-1">No devices paired yet.</p>
+                )}
+              </div>
+            </div>
           </div>
         );
       })}
@@ -281,6 +352,9 @@ export default async function TrustedSettingsPage({
       </Suspense>
       <Suspense fallback={null}>
         <Toast paramKey="appremoved" message="App removed" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Toast paramKey="deviceremoved" message="Device removed" />
       </Suspense>
     </div>
   );

@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.GuardiaCompanion" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#2DD4BF</item>
+        <item name="colorPrimaryDark">#0B1739</item>
+        <item name="colorAccent">#2DD4BF</item>
+    </style>
+</resources>
