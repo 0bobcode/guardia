@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  DISTRICT_ADMIN
+  PARENT
+}
+
+enum GradeBand {
+  K_5
+  G6_8
+  G9_12
+}
+
+enum RiskLevel {
+  NONE
+  LOW
+  MED
+  HIGH
+}
+
+enum ScanAction {
+  PASSED
+  FLAGGED
+  BLOCKED
+}
+
+enum ConsentStatus {
+  PENDING
+  APPROVED
+  DENIED
+  EXPIRED
+}
+
+model District {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  users        User[]
+  apps         App[]
+  policies     Policy[]
+  scanEvents   ScanEvent[]
+  students     Student[]
+  dailyStats   DailyStat[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  createdAt    DateTime @default(now())
+
+  districtId String?
+  district   District? @relation(fields: [districtId], references: [id])
+
+  // Parent-specific
+  children Student[] @relation("ParentToStudent")
+}
+
+model Student {
+  id           String   @id @default(cuid())
+  name         String
+  gradeBand    GradeBand
+  email        String?
+  passwordHash String?
+  createdAt    DateTime @default(now())
+
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+
+  parentId String?
+  parent   User?   @relation("ParentToStudent", fields: [parentId], references: [id])
+
+  enrollments    StudentAppEnrollment[]
+  scanEvents     ScanEvent[]
+  consentRequests ConsentRequest[]
+  aiSessions     AiSession[]
+}
+
+// AI apps / platforms integrated with GuardRail (e.g. Tutorly AI, MathBot K-5)
+model App {
+  id        String   @id @default(cuid())
+  name      String
+  subject   String
+  provider  String   @default("anthropic") // "anthropic" | "openai" | "google"
+  model     String   @default("claude-sonnet-5")
+  createdAt DateTime @default(now())
+
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+
+  enrollments     StudentAppEnrollment[]
+  scanEvents      ScanEvent[]
+  consentRequests ConsentRequest[]
+  aiSessions      AiSession[]
+
+  @@unique([districtId, name])
+}
+
+// Which students use which apps, and daily usage tracking
+model StudentAppEnrollment {
+  id            String  @id @default(cuid())
+  dailyLimitMin Int     @default(180)
+  usedTodayMin  Int     @default(0)
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  appId String
+  app   App    @relation(fields: [appId], references: [id])
+
+  @@unique([studentId, appId])
+}
+
+// Grade-band safety policy: keyword categories + thresholds, editable by district admins
+model Policy {
+  id          String    @id @default(cuid())
+  gradeBand   GradeBand
+  category    String
+  keywords    String // comma-separated keyword list
+  action      ScanAction // action taken when this category matches at this grade band
+  enabled     Boolean   @default(true)
+  updatedAt   DateTime  @updatedAt
+
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+
+  @@unique([districtId, gradeBand, category])
+}
+
+// A single real-time content scan event (the core GuardRail log)
+model ScanEvent {
+  id          String     @id @default(cuid())
+  queryText   String
+  riskLevel   RiskLevel
+  action      ScanAction
+  categories  String // comma-separated matched category names
+  gradeBand   GradeBand
+  createdAt   DateTime   @default(now())
+
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+
+  appId String
+  app   App    @relation(fields: [appId], references: [id])
+
+  studentId String?
+  student   Student? @relation(fields: [studentId], references: [id])
+}
+
+// Aggregate daily volume metrics for the compliance dashboard headline
+// numbers (call volume at GuardRail's scale isn't reasonable to store as
+// individual rows in a demo DB; audit-quality detail lives in ScanEvent).
+model DailyStat {
+  id               String   @id @default(cuid())
+  date             DateTime
+  apiCallsTotal    Int
+  requestsBlocked  Int
+  complianceScore  Float
+
+  districtId String
+  district   District @relation(fields: [districtId], references: [id])
+
+  @@unique([districtId, date])
+}
+
+// Parental consent workflow (TrustEd)
+model ConsentRequest {
+  id          String        @id @default(cuid())
+  reason      String
+  status      ConsentStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  respondedAt DateTime?
+  expiresAt   DateTime
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  appId String
+  app   App    @relation(fields: [appId], references: [id])
+}
+
+enum MessageRole {
+  STUDENT
+  ASSISTANT
+}
+
+// A full AI conversation GuardRail scanned turn-by-turn — what TrustEd's
+// parent-facing session monitor renders as a transcript.
+model AiSession {
+  id        String    @id @default(cuid())
+  startedAt DateTime
+  endedAt   DateTime?
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  appId String
+  app   App    @relation(fields: [appId], references: [id])
+
+  messages SessionMessage[]
+}
+
+model SessionMessage {
+  id            String      @id @default(cuid())
+  role          MessageRole
+  content       String
+  riskLevel     RiskLevel   @default(NONE)
+  action        ScanAction  @default(PASSED)
+  parentFlagged Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+
+  sessionId String
+  session   AiSession @relation(fields: [sessionId], references: [id])
+}
+
+// Inbound inquiries from the public marketing site's contact form.
+model ContactRequest {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  organization String?
+  interest     String
+  message      String
+  createdAt    DateTime @default(now())
+}

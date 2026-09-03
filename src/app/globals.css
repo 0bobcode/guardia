@@ -2,25 +2,232 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+
+  /* Guardia brand palette (marketing site — light) */
+  --brand-navy: #0b1739;
+  --brand-navy-soft: #131f47;
+  --brand-teal: #0ea5a0;
+  --brand-teal-soft: #e6f7f5;
+  --brand-ink: #0f172a;
+  --brand-muted: #64748b;
+  --brand-border: #e2e8f0;
+
+  /* App shell palette (GuardRail / TrustEd — dark) */
+  --app-bg: #090c14;
+  --app-surface: #10152280;
+  --app-surface-solid: #10152a;
+  --app-surface-2: #171d33;
+  --app-border: rgba(255, 255, 255, 0.08);
+  --app-border-strong: rgba(255, 255, 255, 0.16);
+  --app-text: #f1f5f9;
+  --app-muted: #94a3b8;
+  --app-faint: #64748b;
+  --app-teal: #2dd4bf;
+  --app-teal-soft: rgba(45, 212, 191, 0.12);
+  --app-teal-glow: rgba(45, 212, 191, 0.25);
+
+  --app-risk-high: #f87171;
+  --app-risk-high-bg: rgba(248, 113, 113, 0.12);
+  --app-risk-med: #fbbf24;
+  --app-risk-med-bg: rgba(251, 191, 36, 0.12);
+  --app-risk-low: #60a5fa;
+  --app-risk-low-bg: rgba(96, 165, 250, 0.12);
+  --app-risk-none: #4ade80;
+  --app-risk-none-bg: rgba(74, 222, 128, 0.12);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-soft: var(--brand-navy-soft);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-teal-soft: var(--brand-teal-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-border: var(--brand-border);
+
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-surface-solid: var(--app-surface-solid);
+  --color-app-surface-2: var(--app-surface-2);
+  --color-app-border: var(--app-border);
+  --color-app-border-strong: var(--app-border-strong);
+  --color-app-text: var(--app-text);
+  --color-app-muted: var(--app-muted);
+  --color-app-faint: var(--app-faint);
+  --color-app-teal: var(--app-teal);
+  --color-app-teal-soft: var(--app-teal-soft);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ---- Marketing hero (dark, glowing mesh) ---- */
+.marketing-hero {
+  background-color: var(--brand-navy);
+  background-image:
+    radial-gradient(700px 460px at 12% -10%, rgba(45, 212, 191, 0.18), transparent),
+    radial-gradient(560px 400px at 92% 20%, rgba(99, 102, 241, 0.14), transparent),
+    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: auto, auto, 26px 26px;
+  background-position: 0 0, 0 0, 0 0;
+}
+
+/* ---- App shell (dark) ---- */
+.app-shell {
+  background: var(--app-bg);
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(45, 212, 191, 0.07), transparent),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgba(99, 102, 241, 0.06), transparent);
+  color: var(--app-text);
+}
+
+.app-card {
+  background: var(--app-surface-solid);
+  border: 1px solid var(--app-border);
+}
+
+.app-input {
+  background: var(--app-surface-2);
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+}
+.app-input::placeholder {
+  color: var(--app-faint);
+}
+.app-input:focus {
+  outline: none;
+  border-color: var(--app-teal);
+  box-shadow: 0 0 0 3px var(--app-teal-soft);
+}
+
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.risk-badge.risk-HIGH {
+  color: var(--app-risk-high);
+  background: var(--app-risk-high-bg);
+}
+.risk-badge.risk-MED {
+  color: var(--app-risk-med);
+  background: var(--app-risk-med-bg);
+}
+.risk-badge.risk-LOW {
+  color: var(--app-risk-low);
+  background: var(--app-risk-low-bg);
+}
+.risk-badge.risk-NONE {
+  color: var(--app-risk-none);
+  background: var(--app-risk-none-bg);
+}
+
+@keyframes msg-pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--app-teal-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(45, 212, 191, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(45, 212, 191, 0);
+  }
+}
+.msg-highlight {
+  animation: msg-pulse 1s ease-out 2;
+  border-radius: 1rem;
+}
+
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.msg-row {
+  animation: msg-in 0.35s ease-out both;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.msg-reveal {
+  animation: bubble-in 0.25s ease-out both;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 3px 2px;
+}
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.dark-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.dark-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.dark-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dark-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+.dark-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
