@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { CATEGORY_DEFS } from "@/lib/scanEngine";
 import { PolicyTester } from "@/components/PolicyTester";
 import { Toast } from "@/components/Toast";
-import { updatePolicyAction } from "./actions";
+import { updatePolicyAction, createPolicyCategoryAction, deletePolicyCategoryAction } from "./actions";
 import type { GradeBand } from "@prisma/client";
 
 const BANDS: { value: GradeBand; label: string }[] = [
@@ -14,11 +14,25 @@ const BANDS: { value: GradeBand; label: string }[] = [
 ];
 
 const ACTION_OPTIONS = ["PASSED", "FLAGGED", "BLOCKED"] as const;
+const BUILT_IN_KEYS = new Set(CATEGORY_DEFS.map((c) => c.key));
+
+function labelFromKey(key: string): string {
+  return key
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+const CATEGORY_ERRORS: Record<string, string> = {
+  categoryname: "Give the category a name.",
+  categorykeywords: "Add at least one keyword or phrase.",
+  categoryexists: "A category with that name already exists.",
+};
 
 export default async function PoliciesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ band?: string }>;
+  searchParams: Promise<{ band?: string; error?: string }>;
 }) {
   const session = await requireRole("DISTRICT_ADMIN");
   const districtId = session!.user.districtId!;
@@ -29,6 +43,7 @@ export default async function PoliciesPage({
     where: { districtId, gradeBand: activeBand },
   });
   const byCategory = new Map(policies.map((p) => [p.category, p]));
+  const customPolicies = policies.filter((p) => !BUILT_IN_KEYS.has(p.category));
   const apps = await prisma.app.findMany({
     where: { districtId, name: { not: "Policy Tester" } },
     orderBy: { name: "asc" },
@@ -115,9 +130,143 @@ export default async function PoliciesPage({
             </form>
           );
         })}
+
+        {customPolicies.map((policy) => (
+          <form
+            key={policy.category}
+            action={updatePolicyAction}
+            className="app-card rounded-xl p-5 transition-shadow hover:border-app-border-strong border-app-teal/20"
+          >
+            <input type="hidden" name="policyId" value={policy.id} />
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-app-text">{labelFromKey(policy.category)}</h3>
+                  <span className="text-[10px] font-semibold uppercase tracking-wide text-app-teal bg-app-teal-soft px-1.5 py-0.5 rounded">
+                    Custom
+                  </span>
+                </div>
+                <p className="text-xs text-app-muted">Applies across all grade bands — tune each separately here.</p>
+              </div>
+              <label className="flex items-center gap-2 text-xs text-app-muted shrink-0">
+                <input type="checkbox" name="enabled" defaultChecked={policy.enabled} className="accent-app-teal" />
+                Enabled
+              </label>
+            </div>
+            <label className="block text-xs font-medium text-app-muted mb-1">
+              Keywords / phrases (comma-separated)
+            </label>
+            <textarea
+              name="keywords"
+              defaultValue={policy.keywords}
+              rows={2}
+              className="w-full text-sm border border-app-border rounded-md px-3 py-2 bg-app-surface-2 text-app-text focus:outline-none focus:ring-2 focus:ring-app-teal font-mono"
+            />
+            <div className="flex items-center justify-between mt-3">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-app-muted">Action when matched</label>
+                <select
+                  name="action"
+                  defaultValue={policy.action}
+                  className="text-xs border border-app-border rounded-md px-2 py-1.5 bg-app-surface-2"
+                >
+                  {ACTION_OPTIONS.map((a) => (
+                    <option key={a} value={a}>
+                      {a.charAt(0) + a.slice(1).toLowerCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="hidden" name="category" value={policy.category} />
+                <input type="hidden" name="band" value={activeBand} />
+                <button
+                  type="submit"
+                  formAction={deletePolicyCategoryAction}
+                  className="text-xs font-medium px-3 py-1.5 rounded-md border border-app-border text-app-faint hover:text-red-400 hover:border-red-400/40 transition-colors"
+                  title="Remove this category from every grade band"
+                >
+                  Delete
+                </button>
+                <button
+                  type="submit"
+                  className="text-xs font-semibold px-4 py-1.5 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 active:scale-[0.97] transition-all"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        ))}
       </div>
+
+      <div className="app-card rounded-xl p-5 mt-6">
+        <h2 className="text-sm font-semibold text-app-text mb-1">Add a category</h2>
+        <p className="text-xs text-app-muted mb-4">
+          Beyond the {CATEGORY_DEFS.length} built-in categories — created across K-5, 6-8, and 9-12 at once,
+          then tune each band&apos;s keywords and action separately.
+        </p>
+        {params.error && CATEGORY_ERRORS[params.error] && (
+          <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2">
+            {CATEGORY_ERRORS[params.error]}
+          </div>
+        )}
+        <form action={createPolicyCategoryAction} className="space-y-3">
+          <input type="hidden" name="band" value={activeBand} />
+          <div>
+            <label className="block text-xs font-medium text-app-muted mb-1">Category name</label>
+            <input
+              name="label"
+              required
+              placeholder="e.g. Discord Links & External Contacts"
+              className="app-input w-full rounded-md px-3 py-2 text-sm text-app-text"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-app-muted mb-1">
+              Keywords / phrases (comma-separated)
+            </label>
+            <textarea
+              name="keywords"
+              required
+              rows={2}
+              placeholder="discord.gg, add me on discord, my snapchat is"
+              className="w-full text-sm border border-app-border rounded-md px-3 py-2 bg-app-surface-2 text-app-text focus:outline-none focus:ring-2 focus:ring-app-teal font-mono"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-medium text-app-muted">Action when matched</label>
+              <select
+                name="action"
+                defaultValue="FLAGGED"
+                className="text-xs border border-app-border rounded-md px-2 py-1.5 bg-app-surface-2"
+              >
+                {ACTION_OPTIONS.map((a) => (
+                  <option key={a} value={a}>
+                    {a.charAt(0) + a.slice(1).toLowerCase()}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="text-xs font-semibold px-4 py-1.5 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 active:scale-[0.97] transition-all"
+            >
+              Add category
+            </button>
+          </div>
+        </form>
+      </div>
+
       <Suspense fallback={null}>
         <Toast paramKey="saved" message="Policy updated" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Toast paramKey="categoryadded" message="Category added" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Toast paramKey="categoryremoved" message="Category removed" />
       </Suspense>
     </div>
   );
