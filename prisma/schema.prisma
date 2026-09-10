@@ -54,16 +54,22 @@ model District {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  passwordHash String
+  passwordHash String?  // null for SSO-provisioned accounts (no local password)
   name         String
   role         Role
   createdAt    DateTime @default(now())
+
+  // "credentials" | "microsoft-entra-id" — which auth method provisioned/owns this account
+  authProvider String  @default("credentials")
+  externalId   String? // Azure AD object id (oid) for SSO-linked accounts
 
   districtId String?
   district   District? @relation(fields: [districtId], references: [id])
 
   // Parent-specific
   children Student[] @relation("ParentToStudent")
+
+  @@unique([authProvider, externalId])
 }
 
 model Student {

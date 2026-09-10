@@ -3,6 +3,10 @@
 import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
 
+export async function loginWithMicrosoftAction() {
+  await signIn("microsoft-entra-id", { redirectTo: "/dashboard" });
+}
+
 export async function loginAction(formData: FormData) {
   try {
     await signIn("credentials", {

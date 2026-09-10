@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { scanText } from "@/lib/scanEngine";
 import { appNameForPackage } from "@/lib/devicePackages";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 import type { GradeBand, MessageRole } from "@prisma/client";
 
 // A session groups nearby messages the way a real conversation would; a gap
@@ -9,11 +10,26 @@ import type { GradeBand, MessageRole } from "@prisma/client";
 // merging into one endless transcript.
 const SESSION_GAP_MS = 20 * 60 * 1000;
 
+const MAX_TEXT_LENGTH = 8_000;
+
 export async function POST(req: Request) {
+  // Looser than /api/device/pair — this carries legitimate, frequent traffic
+  // from a paired device's Accessibility Service, not a one-off code guess.
+  const { allowed, retryAfterSeconds } = rateLimit(`device-ingest:${clientIp(req)}`, {
+    limit: 120,
+    windowMs: 60_000,
+  });
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests, try again shortly" },
+      { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+    );
+  }
+
   const body = await req.json().catch(() => null);
   const token = typeof body?.token === "string" ? body.token : "";
   const packageName = typeof body?.packageName === "string" ? body.packageName : "";
-  const text = typeof body?.text === "string" ? body.text.trim() : "";
+  const text = typeof body?.text === "string" ? body.text.trim().slice(0, MAX_TEXT_LENGTH) : "";
   const role: MessageRole = body?.role === "ASSISTANT" ? "ASSISTANT" : "STUDENT";
 
   if (!token) return NextResponse.json({ error: "token is required" }, { status: 401 });

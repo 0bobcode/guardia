@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { loginAction } from "./actions";
+import { SubmitButton } from "@/components/SubmitButton";
+import { microsoftEntraEnabled } from "@/lib/auth";
+import { loginAction, loginWithMicrosoftAction } from "./actions";
 import { demoLoginAction } from "./demo-actions";
 
 export default async function LoginPage({
@@ -13,12 +15,15 @@ export default async function LoginPage({
   return (
     <main className="app-shell flex-1 flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <Link href="/" className="flex items-center gap-2.5 justify-center mb-8">
+        <Link
+          href="/"
+          className="load-in flex items-center gap-2.5 justify-center mb-8 transition-transform hover:scale-[1.03]"
+        >
           <Logo size={34} />
           <span className="font-semibold text-app-text tracking-tight">GUARDIA</span>
         </Link>
 
-        <div className="app-card rounded-xl p-8">
+        <div className="app-card rounded-xl p-8 load-in" style={{ animationDelay: "80ms" }}>
           <h1 className="text-lg font-semibold text-app-text">Welcome back</h1>
           <p className="text-sm text-app-muted mt-1">Sign in to your GuardRail or TrustEd dashboard.</p>
 
@@ -28,7 +33,31 @@ export default async function LoginPage({
             </div>
           )}
 
-          <form action={loginAction} className="mt-6 space-y-4">
+          {microsoftEntraEnabled && (
+            <>
+              <form action={loginWithMicrosoftAction} className="mt-6">
+                <SubmitButton
+                  pendingLabel="Redirecting…"
+                  className="w-full flex items-center justify-center gap-2.5 rounded-md border border-app-border bg-app-surface-2 text-app-text text-sm font-medium py-2.5 hover:border-app-border-strong hover:bg-white/[0.03] active:scale-[0.99] transition-all"
+                >
+                  <svg width="16" height="16" viewBox="0 0 21 21" aria-hidden="true">
+                    <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                    <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                    <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                    <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                  </svg>
+                  Continue with Microsoft
+                </SubmitButton>
+              </form>
+              <div className="flex items-center gap-3 mt-5">
+                <div className="h-px flex-1 bg-app-border" />
+                <span className="text-xs text-app-faint">or</span>
+                <div className="h-px flex-1 bg-app-border" />
+              </div>
+            </>
+          )}
+
+          <form action={loginAction} className={microsoftEntraEnabled ? "mt-5 space-y-4" : "mt-6 space-y-4"}>
             <div>
               <label className="block text-xs font-medium text-app-muted mb-1">Email</label>
               <div className="relative">
@@ -62,12 +91,12 @@ export default async function LoginPage({
                 />
               </div>
             </div>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Signing in…"
               className="w-full rounded-md bg-app-teal text-[#04211d] text-sm font-semibold py-2.5 hover:opacity-90 active:scale-[0.99] transition-all"
             >
               Sign in
-            </button>
+            </SubmitButton>
           </form>
 
           <p className="mt-5 text-center text-sm text-app-muted">
@@ -78,31 +107,31 @@ export default async function LoginPage({
           </p>
         </div>
 
-        <div className="mt-6 app-card rounded-xl p-5">
+        <div className="mt-6 app-card rounded-xl p-5 load-in" style={{ animationDelay: "160ms" }}>
           <p className="text-xs font-semibold text-app-text mb-3">Try it without an account</p>
           <div className="grid grid-cols-2 gap-2">
             <form action={demoLoginAction}>
               <input type="hidden" name="role" value="admin" />
-              <button
-                type="submit"
-                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] transition-colors"
+              <SubmitButton
+                pendingLabel="Loading…"
+                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] active:scale-[0.98] transition-all"
               >
                 View as district admin
-              </button>
+              </SubmitButton>
             </form>
             <form action={demoLoginAction}>
               <input type="hidden" name="role" value="parent" />
-              <button
-                type="submit"
-                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] transition-colors"
+              <SubmitButton
+                pendingLabel="Loading…"
+                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] active:scale-[0.98] transition-all"
               >
                 View as a parent
-              </button>
+              </SubmitButton>
             </form>
           </div>
         </div>
 
-        <p className="mt-6 text-center text-xs text-app-muted">
+        <p className="mt-6 text-center text-xs text-app-muted load-in" style={{ animationDelay: "220ms" }}>
           <Link href="/" className="hover:text-app-text">
             ← Back to guardia.ai
           </Link>
