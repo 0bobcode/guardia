@@ -15,7 +15,7 @@ const RISK_FILTERS: { label: string; value: RiskLevel | "ALL" }[] = [
 export default async function AlertsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ risk?: string; app?: string; q?: string }>;
+  searchParams: Promise<{ risk?: string; app?: string; student?: string; q?: string }>;
 }) {
   const session = await requireRole("DISTRICT_ADMIN");
   const districtId = session!.user.districtId!;
@@ -24,12 +24,14 @@ export default async function AlertsPage({
   const query = (params.q ?? "").trim();
 
   const apps = await prisma.app.findMany({ where: { districtId }, orderBy: { name: "asc" } });
+  const students = await prisma.student.findMany({ where: { districtId }, orderBy: { name: "asc" } });
 
   const events = await prisma.scanEvent.findMany({
     where: {
       districtId,
       ...(riskFilter !== "ALL" ? { riskLevel: riskFilter } : {}),
       ...(params.app ? { appId: params.app } : {}),
+      ...(params.student ? { studentId: params.student } : {}),
       ...(query ? { queryText: { contains: query } } : {}),
     },
     orderBy: { createdAt: "desc" },
@@ -47,7 +49,7 @@ export default async function AlertsPage({
           {RISK_FILTERS.map((f) => (
             <a
               key={f.value}
-              href={`/guardrail/alerts?risk=${f.value}${params.app ? `&app=${params.app}` : ""}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
+              href={`/guardrail/alerts?risk=${f.value}${params.app ? `&app=${params.app}` : ""}${params.student ? `&student=${params.student}` : ""}${query ? `&q=${encodeURIComponent(query)}` : ""}`}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                 riskFilter === f.value ? "bg-app-teal text-[#04211d]" : "text-app-muted hover:text-app-text"
               }`}
@@ -89,13 +91,25 @@ export default async function AlertsPage({
               </option>
             ))}
           </select>
+          <select
+            name="student"
+            defaultValue={params.student ?? ""}
+            className="text-xs border border-app-border rounded-md px-2 py-1.5 text-app-text bg-app-surface-2"
+          >
+            <option value="">All students</option>
+            {students.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
           <button
             type="submit"
             className="text-xs font-medium px-3 py-1.5 rounded-md border border-app-border text-app-text hover:bg-white/5 transition-colors"
           >
             Filter
           </button>
-          {(params.app || query || riskFilter !== "ALL") && (
+          {(params.app || params.student || query || riskFilter !== "ALL") && (
             <a
               href="/guardrail/alerts"
               className="text-xs font-medium text-app-muted hover:text-app-text px-2"
