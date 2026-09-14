@@ -13,9 +13,10 @@ object Prefs {
     private const val KEY_TOKEN = "token"
     private const val KEY_STUDENT_NAME = "student_name"
 
-    // 10.0.2.2 is the Android emulator's alias for the host machine's
-    // localhost. Swap to https://guardia-seven.vercel.app for a real device.
-    const val BASE_URL = "http://10.0.2.2:3912"
+    // Debug builds hit the emulator's alias for the host machine's localhost
+    // (10.0.2.2); release builds point at the real deployment. See
+    // build.gradle.kts's buildConfigField per build type.
+    val BASE_URL: String = BuildConfig.BASE_URL
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(FILE, Context.MODE_PRIVATE)

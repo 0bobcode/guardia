@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -29,9 +30,7 @@ class MainActivity : AppCompatActivity() {
         val openSettingsButton = findViewById<Button>(R.id.openAccessibilitySettingsButton)
 
         pairButton.setOnClickListener { onPairClicked() }
-        openSettingsButton.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-        }
+        openSettingsButton.setOnClickListener { showAccessibilityDisclosure() }
 
         refreshStatus()
     }
@@ -61,6 +60,20 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    /** Prominent in-app disclosure required before requesting an
+     *  Accessibility Service permission that reads on-screen content —
+     *  Settings alone isn't sufficient consent for this permission type. */
+    private fun showAccessibilityDisclosure() {
+        AlertDialog.Builder(this)
+            .setTitle("Enable monitoring")
+            .setMessage(getString(R.string.accessibility_service_description))
+            .setPositiveButton("I understand and agree") { _, _ ->
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun refreshStatus() {

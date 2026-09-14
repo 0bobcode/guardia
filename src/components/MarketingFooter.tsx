@@ -26,6 +26,7 @@ export function MarketingFooter() {
           <ul className="space-y-2 text-sm text-brand-muted">
             <li><Link href="/about" className="hover:text-brand-ink">About</Link></li>
             <li><Link href="/contact" className="hover:text-brand-ink">Contact</Link></li>
+            <li><Link href="/privacy" className="hover:text-brand-ink">Privacy</Link></li>
             <li><Link href="/login" className="hover:text-brand-ink">Sign in</Link></li>
           </ul>
         </div>

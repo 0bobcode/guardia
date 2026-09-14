@@ -16,9 +16,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3912\"")
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField("String", "BASE_URL", "\"https://guardia-seven.vercel.app\"")
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
