@@ -1,0 +1,287 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		000000000000000000001015 /* GuardiaCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000100F /* GuardiaCompanionApp.swift */; };
+		000000000000000000001016 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001010 /* ContentView.swift */; };
+		000000000000000000001017 /* ApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001011 /* ApiClient.swift */; };
+		000000000000000000001018 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001012 /* Prefs.swift */; };
+		000000000000000000001019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001014 /* Assets.xcassets */; };
+		000000000000000000001B01 /* MonitoredApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001A01 /* MonitoredApp.swift */; };
+		000000000000000000001B02 /* ScreenTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000001A02 /* ScreenTimeManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00000000000000000000100E /* GuardiaCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GuardiaCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000100F /* GuardiaCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuardiaCompanionApp.swift; sourceTree = "<group>"; };
+		000000000000000000001010 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		000000000000000000001011 /* ApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClient.swift; sourceTree = "<group>"; };
+		000000000000000000001012 /* Prefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prefs.swift; sourceTree = "<group>"; };
+		000000000000000000001014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		000000000000000000001A03 /* GuardiaCompanion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GuardiaCompanion.entitlements; sourceTree = "<group>"; };
+		000000000000000000001A01 /* MonitoredApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoredApp.swift; sourceTree = "<group>"; };
+		000000000000000000001A02 /* ScreenTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenTimeManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00000000000000000000100C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		000000000000000000001008 /* GuardiaCompanion */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000100A /* GuardiaCompanion */,
+				000000000000000000001009 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		000000000000000000001009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000100E /* GuardiaCompanion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		00000000000000000000100A /* GuardiaCompanion */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000100F /* GuardiaCompanionApp.swift */,
+				000000000000000000001010 /* ContentView.swift */,
+				000000000000000000001011 /* ApiClient.swift */,
+				000000000000000000001012 /* Prefs.swift */,
+				000000000000000000001A01 /* MonitoredApp.swift */,
+				000000000000000000001A02 /* ScreenTimeManager.swift */,
+				000000000000000000001014 /* Assets.xcassets */,
+				000000000000000000001A03 /* GuardiaCompanion.entitlements */,
+			);
+			path = GuardiaCompanion;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000000001001 /* GuardiaCompanion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000000001003 /* Build configuration list for PBXNativeTarget "GuardiaCompanion" */;
+			buildPhases = (
+				00000000000000000000100B /* Sources */,
+				00000000000000000000100C /* Frameworks */,
+				00000000000000000000100D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GuardiaCompanion;
+			productName = GuardiaCompanion;
+			productReference = 00000000000000000000100E /* GuardiaCompanion.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000001000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					000000000000000000001001 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 000000000000000000001002 /* Build configuration list for PBXProject "GuardiaCompanion" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 000000000000000000001008 /* GuardiaCompanion */;
+			productRefGroup = 000000000000000000001009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				000000000000000000001001 /* GuardiaCompanion */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00000000000000000000100D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000000000000000000001019 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00000000000000000000100B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000000000000000000001015 /* GuardiaCompanionApp.swift in Sources */,
+				000000000000000000001016 /* ContentView.swift in Sources */,
+				000000000000000000001017 /* ApiClient.swift in Sources */,
+				000000000000000000001018 /* Prefs.swift in Sources */,
+				000000000000000000001B01 /* MonitoredApp.swift in Sources */,
+				000000000000000000001B02 /* ScreenTimeManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		000000000000000000001004 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		000000000000000000001005 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		000000000000000000001006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GuardiaCompanion/GuardiaCompanion.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guardia Companion";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guardia.companion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		000000000000000000001007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GuardiaCompanion/GuardiaCompanion.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Guardia Companion";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.guardia.companion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000000000000000000001002 /* Build configuration list for PBXProject "GuardiaCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000001004 /* Debug */,
+				000000000000000000001005 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		000000000000000000001003 /* Build configuration list for PBXNativeTarget "GuardiaCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000001006 /* Debug */,
+				000000000000000000001007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 000000000000000000001000 /* Project object */;
+}
