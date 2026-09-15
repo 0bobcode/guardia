@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	Distribution builds (TestFlight/App Store) need the separate Family
+	Controls Distribution approval, requested by the Account Holder at
+	developer.apple.com/contact/request/family-controls-distribution.
+	Development builds on a paid Program team don't need that approval —
+	a free/unpaid Personal Team cannot get this entitlement at all, even
+	for local development.
+	-->
+	<key>com.apple.developer.family-controls</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.guardia.companion</string>
+	</array>
+</dict>
+</plist>
