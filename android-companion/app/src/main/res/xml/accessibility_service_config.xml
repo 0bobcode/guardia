@@ -5,5 +5,5 @@
     android:accessibilityFlags="flagReportViewIds|flagRetrieveInteractiveWindows"
     android:canRetrieveWindowContent="true"
     android:notificationTimeout="600"
-    android:packageNames="com.google.android.apps.bard,com.openai.chatgpt,com.anthropic.claude"
+    android:packageNames="com.google.android.apps.bard,com.google.android.googlequicksearchbox,com.openai.chatgpt,com.anthropic.claude"
     android:description="@string/accessibility_service_description" />

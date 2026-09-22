@@ -5,6 +5,10 @@
 export const KNOWN_PACKAGES: Record<string, string> = {
   "com.google.android.apps.bard": "Gemini",
   "com.google.android.apps.gemini": "Gemini",
+  // Google has been consolidating Search/Assistant/Gemini into one app on
+  // some devices/versions — the Gemini surface there is served from this
+  // shared package rather than the standalone Gemini app.
+  "com.google.android.googlequicksearchbox": "Gemini",
   "com.openai.chatgpt": "ChatGPT",
   "com.anthropic.claude": "Claude",
 };

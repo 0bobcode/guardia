@@ -2,6 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/requireSession";
 import { prisma } from "@/lib/db";
 import { ProviderBadge } from "@/components/ProviderBadge";
+import { RiskGauge } from "@/components/charts/RiskGauge";
+import { RiskBreakdownBars } from "@/components/charts/RiskBreakdownBars";
+import { weightedRiskScore, countByRiskLevel } from "@/lib/risk";
 
 function greeting() {
   const h = new Date().getHours();
@@ -47,32 +50,43 @@ export default async function TrustedDashboard() {
         const totalMinutes = student.enrollments.reduce((sum, e) => sum + e.usedTodayMin, 0);
         const flagsForStudent = todaysFlags.filter((f) => f.studentId === student.id);
         const consentsForStudent = pendingConsents.filter((c) => c.studentId === student.id);
+        const flagCountsByTier = countByRiskLevel(flagsForStudent);
+        const studentRiskScore = weightedRiskScore(flagCountsByTier);
         const h = Math.floor(totalMinutes / 60);
         const m = totalMinutes % 60;
 
         return (
           <div key={student.id} className="mb-10">
-            <h1 className="text-xl font-semibold text-app-text">
+            <h1 className="text-xl font-semibold text-app-text load-in">
               {greeting()}, {session!.user.name.split(" ")[0]} 👋
             </h1>
-            <p className="text-sm text-app-muted mt-1">
+            <p className="text-sm text-app-muted mt-1 load-in">
               {student.name}&apos;s {student.enrollments.length} school apps are monitored · Live
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 mb-6">
-              <div className="app-card rounded-xl p-5">
+              <div
+                className="app-card rounded-xl p-5 load-in transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 hover:border-app-border-strong"
+                style={{ animationDelay: "60ms" }}
+              >
                 <p className="text-xs text-app-muted mb-1">Today&apos;s screen time</p>
                 <p className="text-2xl font-bold text-app-text">
                   {h}h {m.toString().padStart(2, "0")}m
                 </p>
               </div>
-              <div className="app-card rounded-xl p-5">
+              <div
+                className="app-card rounded-xl p-5 load-in transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 hover:border-app-border-strong"
+                style={{ animationDelay: "120ms" }}
+              >
                 <p className="text-xs text-app-muted mb-1">Content flags</p>
                 <p className={`text-2xl font-bold ${flagsForStudent.length ? "text-amber-400" : "text-app-text"}`}>
                   {flagsForStudent.length} flag{flagsForStudent.length === 1 ? "" : "s"}
                 </p>
               </div>
-              <div className="app-card rounded-xl p-5">
+              <div
+                className="app-card rounded-xl p-5 load-in transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 hover:border-app-border-strong"
+                style={{ animationDelay: "180ms" }}
+              >
                 <p className="text-xs text-app-muted mb-1">Pending consents</p>
                 <p className={`text-2xl font-bold ${consentsForStudent.length ? "text-app-teal" : "text-app-text"}`}>
                   {consentsForStudent.length} pending
@@ -80,13 +94,30 @@ export default async function TrustedDashboard() {
               </div>
             </div>
 
+            {flagsForStudent.length > 0 && (
+              <div
+                className="app-card rounded-xl p-5 load-in mb-6 grid sm:grid-cols-[auto_1fr] gap-8 items-center"
+                style={{ animationDelay: "210ms" }}
+              >
+                <div>
+                  <p className="text-xs text-app-muted mb-2 text-center sm:text-left">Today&apos;s Safety Score</p>
+                  <RiskGauge score={studentRiskScore} size={160} />
+                </div>
+                <div className="w-full">
+                  <p className="text-xs text-app-muted mb-3">Flags by risk tier, today</p>
+                  <RiskBreakdownBars counts={flagCountsByTier} />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3 mb-6">
-              {student.enrollments.map((e) => {
+              {student.enrollments.map((e, i) => {
                 const hasFlag = flagsForStudent.some((f) => f.appId === e.appId);
                 return (
                   <div
                     key={e.id}
-                    className="app-card rounded-xl p-4 flex items-center justify-between transition-colors hover:border-app-border-strong"
+                    className="app-card rounded-xl p-4 flex items-center justify-between transition-all hover:border-app-border-strong hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 load-in"
+                    style={{ animationDelay: `${240 + i * 50}ms` }}
                   >
                     <div>
                       <div className="flex items-center gap-2">
@@ -108,8 +139,12 @@ export default async function TrustedDashboard() {
               })}
             </div>
 
-            {consentsForStudent.map((c) => (
-              <div key={c.id} className="bg-app-teal-soft border border-app-teal/30 rounded-xl p-4 mb-3">
+            {consentsForStudent.map((c, i) => (
+              <div
+                key={c.id}
+                className="bg-app-teal-soft border border-app-teal/30 rounded-xl p-4 mb-3 load-in transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/10"
+                style={{ animationDelay: `${240 + student.enrollments.length * 50 + i * 60}ms` }}
+              >
                 <p className="text-xs font-semibold text-app-teal uppercase mb-1">Consent Required</p>
                 <p className="text-sm text-app-text">{c.reason}</p>
                 <p className="text-xs text-app-muted mt-1">
@@ -117,7 +152,7 @@ export default async function TrustedDashboard() {
                 </p>
                 <Link
                   href="/trusted/consents"
-                  className="inline-block mt-3 text-xs font-semibold px-4 py-2 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 transition-opacity"
+                  className="inline-block mt-3 text-xs font-semibold px-4 py-2 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 active:scale-[0.98] transition-all"
                 >
                   Review request →
                 </Link>
@@ -127,24 +162,26 @@ export default async function TrustedDashboard() {
         );
       })}
 
-      <div className="app-card rounded-xl p-5">
+      <div className="app-card rounded-xl p-5 load-in" style={{ animationDelay: "360ms" }}>
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-sm font-semibold text-app-text">Monitor AI Sessions</h2>
             <p className="text-xs text-app-muted mt-0.5">Full conversation transcripts, scanned turn-by-turn.</p>
           </div>
-          <Link href="/trusted/sessions" className="text-xs font-medium text-app-teal hover:underline shrink-0">
-            View all →
+          <Link href="/trusted/sessions" className="group text-xs font-medium text-app-teal hover:underline shrink-0 inline-flex items-center gap-1">
+            View all
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </div>
         <div className="space-y-2">
-          {recentSessions.map((s) => {
+          {recentSessions.map((s, i) => {
             const hasFlag = s.messages.some((m) => m.riskLevel !== "NONE");
             return (
               <Link
                 key={s.id}
                 href={`/trusted/sessions/${s.id}`}
-                className="flex items-center justify-between text-sm rounded-lg px-3 py-2.5 bg-app-surface-2/50 hover:bg-app-surface-2 transition-colors"
+                className="flex items-center justify-between text-sm rounded-lg px-3 py-2.5 bg-app-surface-2/50 hover:bg-app-surface-2 hover:translate-x-0.5 transition-all load-in"
+                style={{ animationDelay: `${420 + i * 50}ms` }}
               >
                 <div className="min-w-0">
                   <span className="text-app-text font-medium">{s.app.name}</span>
