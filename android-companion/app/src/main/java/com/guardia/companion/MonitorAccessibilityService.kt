@@ -71,8 +71,18 @@ class MonitorAccessibilityService : AccessibilityService() {
         // input box) exposes that hint via the same .text property as real
         // typed content — without this check, a message send that clears
         // the input gets misread as a follow-up message reading the hint.
+        // Fixed UI chrome (disclaimers, model badges, status text) shows up
+        // both as its own isolated node AND concatenated into a shared
+        // header node alongside other text, so this strips each known
+        // chrome phrase out of whatever the node's text turns out to be,
+        // rather than only matching nodes that contain nothing else.
         if (!node.isShowingHintText) {
-            node.text?.let { if (it.isNotBlank()) sb.append(it).append(' ') }
+            var text = node.text?.toString().orEmpty()
+            for (chrome in CHROME_STRINGS) {
+                text = text.replace(chrome, "")
+            }
+            text = text.trim()
+            if (text.isNotBlank()) sb.append(text).append(' ')
         }
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
@@ -85,5 +95,11 @@ class MonitorAccessibilityService : AccessibilityService() {
     companion object {
         private const val DEBOUNCE_MS = 1200L
         private const val MAX_TREE_DEPTH = 12
+        private val CHROME_STRINGS = listOf(
+            "Ask Gemini",
+            "Gemini can make mistakes, so double-check it",
+            "Flash-Lite",
+            "Just a sec…",
+        )
     }
 }
