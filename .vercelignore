@@ -1,0 +1,6 @@
+# These are separate mobile app projects, not part of the Next.js
+# deployment — their node_modules/Pods/build artifacts blow way past
+# Vercel's upload file-count limit if not excluded.
+mobile-companion/
+android-companion/
+ios-companion/
