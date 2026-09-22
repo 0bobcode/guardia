@@ -4,3 +4,7 @@
 mobile-companion/
 android-companion/
 ios-companion/
+
+# Stray local recordings (e.g. screen recordings used as design references)
+# — never meant to be deployed, and can exceed Vercel's 100MB file limit.
+*.mov
