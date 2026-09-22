@@ -2,9 +2,12 @@ const RISK_WEIGHT: Record<string, number> = { HIGH: 100, MED: 60, LOW: 25, NONE:
 
 /** Volume-weighted average risk score (0-100) across a tier -> count map. */
 export function weightedRiskScore(counts: Partial<Record<string, number>>) {
-  const total = Object.values(counts).reduce((sum, c) => sum + (c ?? 0), 0);
+  const total = Object.values(counts).reduce((sum: number, c) => sum + (c ?? 0), 0);
   if (!total) return 0;
-  const weighted = Object.entries(counts).reduce((sum, [level, c]) => sum + (RISK_WEIGHT[level] ?? 0) * (c ?? 0), 0);
+  const weighted = Object.entries(counts).reduce(
+    (sum: number, [level, c]) => sum + (RISK_WEIGHT[level] ?? 0) * (c ?? 0),
+    0,
+  );
   return weighted / total;
 }
 
