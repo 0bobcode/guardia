@@ -3,7 +3,6 @@ package com.guardia.companion
 import android.accessibilityservice.AccessibilityService
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
@@ -24,44 +23,14 @@ class MonitorAccessibilityService : AccessibilityService() {
     private val pendingRunnables = HashMap<String, Runnable>()
     private val lastSentText = HashMap<String, String>()
 
-    // TEMPORARY diagnostic: proves the service instance itself is alive and
-    // that Log.d from this app is actually visible in logcat, independent
-    // of whether any accessibility event ever arrives.
-    override fun onServiceConnected() {
-        super.onServiceConnected()
-        Log.d("GuardiaDebug", "onServiceConnected fired — service instance is alive")
-    }
-
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event ?: return
-        // TEMPORARY diagnostic: log every raw event from a monitored app so
-        // we can see what Gemini/ChatGPT/Claude's real UI actually fires,
-        // instead of guessing. Remove once extraction is confirmed working.
-        Log.d(
-            "GuardiaDebug",
-            "type=${AccessibilityEvent.eventTypeToString(event.eventType)} " +
-                "pkg=${event.packageName} class=${event.className} " +
-                "text=${event.text} desc=${event.contentDescription} " +
-                "sourceEditable=${event.source?.isEditable} sourceText=${event.source?.text}"
-        )
         // Window-state-changed fires on app open/activity transitions; its
         // `text` is the window/activity title (e.g. the app's own name),
         // never message content. Real content arrives via the other two
         // configured event types as the conversation actually renders.
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val pkg = event.packageName?.toString() ?: return
-
-        // googlequicksearchbox is Google's whole multi-purpose app (Search,
-        // Discover feed, Assistant, and Gemini all share this one package)
-        // — the OS-level packageNames filter can't scope any finer than the
-        // whole package, so this class-name check keeps us to just the
-        // Gemini/Assistant surface instead of also reading Search queries
-        // or the Discover feed, which we've never disclosed reading.
-        if (pkg == GOOGLE_APP_PACKAGE) {
-            val className = event.className?.toString().orEmpty()
-            if (!className.startsWith(GOOGLE_ASSISTANT_SURFACE_PREFIX)) return
-        }
-
         if (Prefs.token(this) == null) return // not paired yet — nothing to send to
 
         val role = if (event.source?.isEditable == true) "STUDENT" else "ASSISTANT"
@@ -98,7 +67,13 @@ class MonitorAccessibilityService : AccessibilityService() {
 
     private fun collectText(node: AccessibilityNodeInfo, sb: StringBuilder, depth: Int = 0) {
         if (depth > MAX_TREE_DEPTH) return
-        node.text?.let { if (it.isNotBlank()) sb.append(it).append(' ') }
+        // A node showing its hint/placeholder (e.g. an empty "Ask Gemini"
+        // input box) exposes that hint via the same .text property as real
+        // typed content — without this check, a message send that clears
+        // the input gets misread as a follow-up message reading the hint.
+        if (!node.isShowingHintText) {
+            node.text?.let { if (it.isNotBlank()) sb.append(it).append(' ') }
+        }
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
             collectText(child, sb, depth + 1)
@@ -110,7 +85,5 @@ class MonitorAccessibilityService : AccessibilityService() {
     companion object {
         private const val DEBOUNCE_MS = 1200L
         private const val MAX_TREE_DEPTH = 12
-        private const val GOOGLE_APP_PACKAGE = "com.google.android.googlequicksearchbox"
-        private const val GOOGLE_ASSISTANT_SURFACE_PREFIX = "com.google.android.apps.search.assistant"
     }
 }
