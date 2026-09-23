@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Guardia Companion",
+  "version": "0.1.0",
+  "description": "Reports real Gemini/ChatGPT/Claude web chat activity to a linked parent's Guardia dashboard.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://guardia-seven.vercel.app/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["sites/gemini.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
