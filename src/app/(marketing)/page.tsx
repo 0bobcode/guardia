@@ -7,6 +7,7 @@ import { Reveal } from "@/components/marketing/Reveal";
 import { CountUp } from "@/components/marketing/CountUp";
 import { AnimatedWaves } from "@/components/marketing/AnimatedWaves";
 import { RiskScoreShowcase } from "@/components/marketing/RiskScoreShowcase";
+import { AskGuardiaDemo } from "@/components/marketing/AskGuardiaDemo";
 import { IconAlert, IconPolicies, IconReports, IconChat, IconCheck, IconClock } from "@/components/icons";
 
 const FEATURES = [
@@ -75,7 +76,7 @@ export default function Home() {
             className="load-in text-5xl sm:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05]"
             style={{ animationDelay: "70ms" }}
           >
-            The safety layer between kids and AI.
+            The safety layer between kids and <span className="gradient-text">AI</span>.
           </h1>
           <p
             className="load-in mt-6 text-lg text-slate-300 max-w-xl leading-relaxed"
@@ -142,6 +143,28 @@ export default function Home() {
       </section>
 
       <section className="relative mx-auto max-w-6xl px-6 py-20">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <Reveal>
+            <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">
+              No dashboards to dig through
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight leading-tight">
+              Ask Guardia a question. <span className="gradient-text">Get a real brief back.</span>
+            </h2>
+            <p className="mt-3 text-sm text-slate-400 leading-relaxed max-w-md">
+              Parents and district admins can ask in plain English — &ldquo;Any concerning topics
+              this week?&rdquo; — and Guardia reads the real, already-scanned activity and answers
+              in seconds. Every number in the brief comes straight from GuardRail&apos;s logs, never
+              invented.
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <AskGuardiaDemo />
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-6xl px-6 py-20 border-t border-white/10">
         <Reveal className="max-w-xl mb-12">
           <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">How it works</p>
           <h2 className="text-3xl font-bold text-white tracking-tight">

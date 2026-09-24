@@ -9,12 +9,18 @@ export function AnimatedWaves() {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-brand-navy" />
       <div
-        className="absolute inset-0 opacity-40"
+        className="orb-a absolute inset-0 opacity-40"
         style={{
           backgroundImage:
             "radial-gradient(700px 600px at 15% 4%, rgba(45, 212, 191, 0.14), transparent), " +
+            "radial-gradient(600px 500px at 30% 55%, rgba(45, 212, 191, 0.07), transparent)",
+        }}
+      />
+      <div
+        className="orb-b absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
             "radial-gradient(640px 560px at 88% 10%, rgba(99, 102, 241, 0.12), transparent), " +
-            "radial-gradient(600px 500px at 30% 55%, rgba(45, 212, 191, 0.07), transparent), " +
             "radial-gradient(600px 500px at 75% 85%, rgba(99, 102, 241, 0.07), transparent)",
         }}
       />

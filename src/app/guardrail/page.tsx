@@ -6,6 +6,8 @@ import { RiskGauge } from "@/components/charts/RiskGauge";
 import { RiskBreakdownBars } from "@/components/charts/RiskBreakdownBars";
 import { formatDate, formatLongDate, formatTime24 } from "@/lib/format";
 import { weightedRiskScore } from "@/lib/risk";
+import { AskGuardia } from "@/components/AskGuardia";
+import { askGuardiaForDistrict } from "./askActions";
 
 function pctChange(today: number, yesterday: number) {
   if (!yesterday) return null;
@@ -67,6 +69,18 @@ export default async function GuardRailDashboard() {
         </div>
       </div>
       <p className="text-sm text-app-muted mb-8 load-in">Compliance Monitoring</p>
+
+      <div className="mb-8">
+        <AskGuardia
+          ask={askGuardiaForDistrict}
+          placeholder="Ask about district-wide AI activity…"
+          examples={[
+            "Any spikes in policy violations this week?",
+            "Which category is flagged most right now?",
+            "How are we trending vs last week?",
+          ]}
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div

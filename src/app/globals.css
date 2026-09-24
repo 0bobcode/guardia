@@ -5,8 +5,8 @@
   --foreground: #0f172a;
 
   /* Guardia brand palette (marketing site — light) */
-  --brand-navy: #0b1739;
-  --brand-navy-soft: #131f47;
+  --brand-navy: #05070d;
+  --brand-navy-soft: #0a0d18;
   --brand-teal: #0ea5a0;
   --brand-teal-soft: #e6f7f5;
   --brand-ink: #0f172a;
@@ -14,10 +14,10 @@
   --brand-border: #e2e8f0;
 
   /* App shell palette (GuardRail / TrustEd — dark) */
-  --app-bg: #090c14;
-  --app-surface: #10152280;
-  --app-surface-solid: #10152a;
-  --app-surface-2: #171d33;
+  --app-bg: #050608;
+  --app-surface: #0b0d1680;
+  --app-surface-solid: #0b0d16;
+  --app-surface-2: #10121e;
   --app-border: rgba(255, 255, 255, 0.08);
   --app-border-strong: rgba(255, 255, 255, 0.16);
   --app-text: #f1f5f9;
@@ -87,7 +87,18 @@ body {
   background-image:
     radial-gradient(ellipse 900px 500px at 15% -10%, rgba(45, 212, 191, 0.07), transparent),
     radial-gradient(ellipse 700px 500px at 100% 0%, rgba(99, 102, 241, 0.06), transparent);
+  background-repeat: no-repeat;
+  background-size: 140% 140%;
   color: var(--app-text);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell {
+    animation: shell-drift 22s ease-in-out infinite;
+  }
+  @keyframes shell-drift {
+    0%, 100% { background-position: 0% 0%, 0% 0%; }
+    50% { background-position: -4% 3%, 3% -3%; }
+  }
 }
 
 .app-card {
@@ -240,6 +251,55 @@ body {
   .wave-path-1 { animation: wave-drift-1 9s ease-in-out infinite; }
   .wave-path-2 { animation: wave-drift-2 12s ease-in-out infinite; }
   .wave-path-3 { animation: wave-drift-1 15s ease-in-out infinite reverse; }
+
+  /* Slow-drifting glow orbs behind the marketing hero and the app shell —
+     a living background instead of a static gradient, like Rolli's. */
+  @keyframes orb-drift-a {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+    50% { transform: translate(2.5%, -3%) scale(1.08); opacity: 1; }
+  }
+  @keyframes orb-drift-b {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    50% { transform: translate(-3%, 2.5%) scale(1.05); opacity: 1; }
+  }
+  .orb-a { animation: orb-drift-a 16s ease-in-out infinite; }
+  .orb-b { animation: orb-drift-b 20s ease-in-out infinite; }
+
+  /* Shifting gradient headline text, like Rolli's colored hero copy. */
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .gradient-text {
+    background-size: 200% auto;
+    animation: gradient-shift 6s ease-in-out infinite;
+  }
+}
+.gradient-text {
+  background-image: linear-gradient(90deg, var(--app-teal), #818cf8, var(--app-teal));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-position: 0% 50%;
+}
+
+/* Soft continuous glow used behind "alive" demo panels. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes glow-breathe {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.7; }
+  }
+  .glow-breathe {
+    animation: glow-breathe 4s ease-in-out infinite;
+  }
+}
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stagger-in {
+  animation: stagger-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .dark-scroll {

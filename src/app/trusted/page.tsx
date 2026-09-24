@@ -5,6 +5,8 @@ import { ProviderBadge } from "@/components/ProviderBadge";
 import { RiskGauge } from "@/components/charts/RiskGauge";
 import { RiskBreakdownBars } from "@/components/charts/RiskBreakdownBars";
 import { weightedRiskScore, countByRiskLevel } from "@/lib/risk";
+import { AskGuardia } from "@/components/AskGuardia";
+import { askGuardiaForStudent } from "./askActions";
 
 function greeting() {
   const h = new Date().getHours();
@@ -63,6 +65,18 @@ export default async function TrustedDashboard() {
             <p className="text-sm text-app-muted mt-1 load-in">
               {student.name}&apos;s {student.enrollments.length} school apps are monitored · Live
             </p>
+
+            <div className="mt-6">
+              <AskGuardia
+                ask={askGuardiaForStudent.bind(null, student.id)}
+                placeholder={`Ask about ${student.name.split(" ")[0]}'s AI activity…`}
+                examples={[
+                  `What has ${student.name.split(" ")[0]} been using AI for this week?`,
+                  "Any concerning topics recently?",
+                  "How does this week compare to usual?",
+                ]}
+              />
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 mb-6">
               <div
