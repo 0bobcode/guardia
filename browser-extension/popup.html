@@ -21,6 +21,18 @@
     color: #94a3b8;
     margin: 0 0 14px;
   }
+  p.hint {
+    font-size: 11px;
+    color: #64748b;
+    margin: 0 0 10px;
+    line-height: 1.4;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8;
+    margin: 0 0 4px;
+  }
   .status-row {
     display: flex;
     align-items: center;
@@ -43,11 +55,14 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: #f1f5f9;
+    font-size: 13px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  input.code {
     font-size: 16px;
     letter-spacing: 2px;
     text-align: center;
-    padding: 10px;
-    margin-bottom: 10px;
     text-transform: uppercase;
   }
   button {
@@ -87,12 +102,25 @@
   </div>
 
   <div id="pairForm">
-    <input id="pairCode" placeholder="Pairing code" maxlength="8" />
+    <input id="pairCode" class="code" placeholder="Pairing code" maxlength="8" />
+    <label for="pairPassword">Unpair password (optional)</label>
+    <input id="pairPassword" type="password" placeholder="Set a password to protect unpairing" />
+    <p class="hint">
+      If set, this password is required to unpair from this popup. It does not stop the extension
+      from being removed via chrome://extensions — Chrome doesn't allow any extension to block that.
+    </p>
     <p class="error" id="pairError" style="display: none;"></p>
     <button id="pairButton">Pair device</button>
   </div>
 
-  <button id="unpairButton" class="outline" style="display: none;">Unpair this browser</button>
+  <div id="unpairSection" style="display: none;">
+    <div id="unpairPrompt" style="display: none;">
+      <label for="unpairPassword">Enter unpair password</label>
+      <input id="unpairPassword" type="password" placeholder="Password" />
+      <p class="error" id="unpairError" style="display: none;"></p>
+    </div>
+    <button id="unpairButton" class="outline">Unpair this browser</button>
+  </div>
 
   <script src="popup.js"></script>
 </body>

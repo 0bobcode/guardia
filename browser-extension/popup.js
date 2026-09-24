@@ -3,23 +3,38 @@ const statusDot = document.getElementById("statusDot");
 const statusText = document.getElementById("statusText");
 const pairForm = document.getElementById("pairForm");
 const pairCodeInput = document.getElementById("pairCode");
+const pairPasswordInput = document.getElementById("pairPassword");
 const pairError = document.getElementById("pairError");
 const pairButton = document.getElementById("pairButton");
+const unpairSection = document.getElementById("unpairSection");
+const unpairPrompt = document.getElementById("unpairPrompt");
+const unpairPasswordInput = document.getElementById("unpairPassword");
+const unpairError = document.getElementById("unpairError");
 const unpairButton = document.getElementById("unpairButton");
 
+let requiresPasswordToUnpair = false;
+let awaitingUnpairConfirm = false;
+
 function render(status) {
+  requiresPasswordToUnpair = !!status.hasPassword;
+  awaitingUnpairConfirm = false;
+  unpairPrompt.style.display = "none";
+  unpairError.style.display = "none";
+  unpairPasswordInput.value = "";
+
   if (status.paired) {
     statusDot.classList.add("on");
     statusText.textContent = `Paired with ${status.studentName}`;
     subtitle.textContent = "Monitoring Gemini on this browser.";
     pairForm.style.display = "none";
-    unpairButton.style.display = "block";
+    unpairSection.style.display = "block";
+    unpairButton.textContent = "Unpair this browser";
   } else {
     statusDot.classList.remove("on");
     statusText.textContent = "Not paired";
     subtitle.textContent = "Not paired — enter the code from TrustEd";
     pairForm.style.display = "block";
-    unpairButton.style.display = "none";
+    unpairSection.style.display = "none";
   }
 }
 
@@ -30,10 +45,11 @@ function refresh() {
 pairButton.addEventListener("click", () => {
   const pairCode = pairCodeInput.value.trim().toUpperCase();
   if (!pairCode) return;
+  const password = pairPasswordInput.value; // optional — empty means no unpair gate
   pairError.style.display = "none";
   pairButton.disabled = true;
   pairButton.textContent = "Pairing…";
-  chrome.runtime.sendMessage({ type: "GUARDIA_PAIR", pairCode }, (result) => {
+  chrome.runtime.sendMessage({ type: "GUARDIA_PAIR", pairCode, password }, (result) => {
     pairButton.disabled = false;
     pairButton.textContent = "Pair device";
     if (!result) {
@@ -46,7 +62,26 @@ pairButton.addEventListener("click", () => {
 });
 
 unpairButton.addEventListener("click", () => {
-  chrome.runtime.sendMessage({ type: "GUARDIA_UNPAIR" }, refresh);
+  if (requiresPasswordToUnpair && !awaitingUnpairConfirm) {
+    // First click just reveals the password field — don't unpair yet.
+    awaitingUnpairConfirm = true;
+    unpairPrompt.style.display = "block";
+    unpairButton.textContent = "Confirm unpair";
+    unpairPasswordInput.focus();
+    return;
+  }
+
+  const password = unpairPasswordInput.value;
+  unpairButton.disabled = true;
+  chrome.runtime.sendMessage({ type: "GUARDIA_UNPAIR", password }, (result) => {
+    unpairButton.disabled = false;
+    if (!result?.ok) {
+      unpairError.textContent = result?.error || "Couldn't unpair.";
+      unpairError.style.display = "block";
+      return;
+    }
+    refresh();
+  });
 });
 
 refresh();

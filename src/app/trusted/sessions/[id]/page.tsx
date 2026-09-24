@@ -7,6 +7,7 @@ import { RiskBadge } from "@/components/RiskBadge";
 import { ProviderBadge } from "@/components/ProviderBadge";
 import { JumpToMessage } from "@/components/JumpToMessage";
 import { RevealBubble } from "@/components/RevealBubble";
+import { MessageContent } from "@/components/MessageContent";
 import { formatDateTime, formatTime } from "@/lib/format";
 import { flagMessageAction, deleteSessionAction } from "./actions";
 
@@ -119,9 +120,13 @@ export default async function SessionDetailPage({
                   <span className="text-[10px] text-app-faint">{formatTime(m.createdAt)}</span>
                 </div>
                 {isNew ? (
-                  <RevealBubble className={bubbleClass}>{m.content}</RevealBubble>
+                  <RevealBubble className={bubbleClass}>
+                    <MessageContent content={m.content} />
+                  </RevealBubble>
                 ) : (
-                  <div className={bubbleClass}>{m.content}</div>
+                  <div className={bubbleClass}>
+                    <MessageContent content={m.content} />
+                  </div>
                 )}
                 <div className={`flex items-center gap-2 px-1 ${isStudent ? "flex-row-reverse" : ""}`}>
                   {isConcern && <RiskBadge level={m.riskLevel} />}
