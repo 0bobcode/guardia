@@ -68,3 +68,23 @@ export async function flagMessageAction(formData: FormData) {
   revalidatePath("/trusted/sessions");
   redirect(`/trusted/sessions/${message.sessionId}?jump=${reply.id}`);
 }
+
+export async function deleteSessionAction(formData: FormData) {
+  const session = await requireActionUser("PARENT");
+
+  const sessionId = String(formData.get("sessionId"));
+
+  const aiSession = await prisma.aiSession.findUnique({
+    where: { id: sessionId },
+    include: { student: true },
+  });
+  if (!aiSession || aiSession.student.parentId !== session.user.id) throw new Error("Not found");
+
+  await prisma.$transaction([
+    prisma.sessionMessage.deleteMany({ where: { sessionId } }),
+    prisma.aiSession.delete({ where: { id: sessionId } }),
+  ]);
+
+  revalidatePath("/trusted/sessions");
+  redirect("/trusted/sessions");
+}

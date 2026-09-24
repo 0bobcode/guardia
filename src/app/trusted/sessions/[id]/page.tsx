@@ -8,7 +8,7 @@ import { ProviderBadge } from "@/components/ProviderBadge";
 import { JumpToMessage } from "@/components/JumpToMessage";
 import { RevealBubble } from "@/components/RevealBubble";
 import { formatDateTime, formatTime } from "@/lib/format";
-import { flagMessageAction } from "./actions";
+import { flagMessageAction, deleteSessionAction } from "./actions";
 
 function Avatar({ initial, kind }: { initial: string; kind: "student" | "ai" }) {
   return (
@@ -78,6 +78,15 @@ export default async function SessionDetailPage({
             ) : (
               <p className="text-xs font-medium text-emerald-400 mt-1">No safety concerns</p>
             )}
+            <form action={deleteSessionAction} className="mt-2">
+              <input type="hidden" name="sessionId" value={aiSession.id} />
+              <button
+                type="submit"
+                className="text-[11px] text-app-faint hover:text-red-400 transition-colors"
+              >
+                Delete session
+              </button>
+            </form>
           </div>
         </div>
       </div>
