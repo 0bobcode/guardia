@@ -3,16 +3,12 @@ import { requireRole } from "@/lib/requireSession";
 import { prisma } from "@/lib/db";
 import { PROVIDERS, providerConnected, providerLabel } from "@/lib/aiProviders";
 import { Toast } from "@/components/Toast";
-import { updateOsVersionAction } from "./actions";
+import { nextPublishedVersion } from "@/lib/osVersion";
+import { publishOsUpdateAction } from "./actions";
 
-export default async function SettingsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string; osversionsaved?: string }>;
-}) {
+export default async function SettingsPage() {
   const session = await requireRole("DISTRICT_ADMIN");
   const districtId = session!.user.districtId!;
-  const params = await searchParams;
   const district = await prisma.district.findUnique({
     where: { id: districtId },
     include: { apps: { where: { name: { not: "Policy Tester" } } } },
@@ -46,27 +42,27 @@ export default async function SettingsPage({
       </div>
 
       <div className="app-card rounded-xl p-5 mb-6">
-        <h2 className="text-sm font-semibold text-app-text mb-1">Platform</h2>
+        <h2 className="text-sm font-semibold text-app-text mb-1">Software Releases</h2>
         <p className="text-xs text-app-muted mb-3">
-          Shown next to the GuardRail logo in the sidebar — a version label for your own reference.
+          The version parents in {district?.name} can install from TrustEd. Publishing a new release
+          doesn&apos;t install it for anyone automatically — each parent installs it themselves.
         </p>
-        <form action={updateOsVersionAction} className="flex items-center gap-2">
-          <input
-            name="osVersion"
-            defaultValue={district?.osVersion}
-            maxLength={30}
-            className="app-input rounded-md px-3 py-2 text-sm text-app-text w-48"
-          />
-          <button
-            type="submit"
-            className="text-xs font-semibold px-3 py-2 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 transition-all"
-          >
-            Save
-          </button>
-        </form>
-        {params.error === "osversion" && (
-          <p className="text-xs text-red-400 mt-2">Enter a version label first.</p>
-        )}
+        <div className="flex items-center justify-between border border-app-border rounded-md px-3 py-2.5">
+          <div>
+            <p className="text-sm text-app-text font-medium">Guardia OS {district?.osVersion} approved</p>
+            <p className="text-xs text-app-faint">
+              Next release: OS {nextPublishedVersion(district?.osVersion ?? "22.0.0")}
+            </p>
+          </div>
+          <form action={publishOsUpdateAction}>
+            <button
+              type="submit"
+              className="text-xs font-semibold px-3 py-1.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] transition-colors shrink-0"
+            >
+              Publish Update
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="app-card rounded-xl p-5 mb-6">
@@ -138,7 +134,7 @@ export default async function SettingsPage({
       </div>
 
       <Suspense fallback={null}>
-        <Toast paramKey="osversionsaved" message="Platform version updated" />
+        <Toast paramKey="published" message="Update published" />
       </Suspense>
     </div>
   );

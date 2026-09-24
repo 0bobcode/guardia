@@ -42,9 +42,10 @@ model District {
   id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
-  // Platform version label shown in the GuardRail sidebar, e.g. "OS 22" —
-  // purely informational, set by the district admin from Settings.
-  osVersion String   @default("OS 22")
+  // The latest Guardia OS version this district's admin has approved/
+  // published from GuardRail Settings — the ceiling parents can install
+  // up to from TrustEd. Format "major.minor.patch", e.g. "22.0.0".
+  osVersion String   @default("22.0.0")
 
   users        User[]
   apps         App[]
@@ -61,6 +62,10 @@ model User {
   name         String
   role         Role
   createdAt    DateTime @default(now())
+  // The Guardia OS version this parent currently has installed (parents
+  // only). Installed via TrustEd Settings, capped at their district's
+  // District.osVersion — never typed in directly. Format "major.minor.patch".
+  osVersion    String   @default("22.0.0")
 
   // "credentials" | "microsoft-entra-id" — which auth method provisioned/owns this account
   authProvider String  @default("credentials")

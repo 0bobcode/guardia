@@ -3,6 +3,8 @@ import { requireRole } from "@/lib/requireSession";
 import { prisma } from "@/lib/db";
 import { Toast } from "@/components/Toast";
 import { ProviderBadge } from "@/components/ProviderBadge";
+import { OsUpdateCard } from "@/components/OsUpdateCard";
+import { compareVersions, DEFAULT_VERSION } from "@/lib/osVersion";
 import { providerLabel, providerShortLabel } from "@/lib/aiProviders";
 import { formatDateTime } from "@/lib/format";
 import {
@@ -14,6 +16,7 @@ import {
   addDevicePairingAction,
   removeDevicePairingAction,
   setUnpairPasswordAction,
+  installOsUpdateAction,
 } from "./actions";
 
 const LIMIT_OPTIONS = [0.5, 1, 1.5, 2, 3, 4, 6];
@@ -40,6 +43,7 @@ export default async function TrustedSettingsPage({
   const session = await requireRole("PARENT");
   const parentId = session!.user.id;
   const params = await searchParams;
+  const currentUser = await prisma.user.findUnique({ where: { id: parentId }, select: { osVersion: true } });
   const students = await prisma.student.findMany({
     where: { parentId },
     include: {
@@ -70,6 +74,13 @@ export default async function TrustedSettingsPage({
           </div>
         </div>
       </div>
+
+      <OsUpdateCard
+        currentVersion={currentUser?.osVersion ?? DEFAULT_VERSION}
+        latestVersion={district?.osVersion ?? DEFAULT_VERSION}
+        upToDate={compareVersions(currentUser?.osVersion ?? DEFAULT_VERSION, district?.osVersion ?? DEFAULT_VERSION) >= 0}
+        installAction={installOsUpdateAction}
+      />
 
       {students.map((student) => {
         const enrolledAppIds = new Set(student.enrollments.map((e) => e.appId));

@@ -14,6 +14,7 @@ export default async function TrustedLayout({ children }: { children: React.Reac
   const pendingConsents = await prisma.consentRequest.count({
     where: { studentId: { in: students.map((s) => s.id) }, status: "PENDING" },
   });
+  const currentUser = await prisma.user.findUnique({ where: { id: session.user.id }, select: { osVersion: true } });
 
   return (
     <div className="app-shell flex-1 min-h-screen">
@@ -23,6 +24,9 @@ export default async function TrustedLayout({ children }: { children: React.Reac
             <div className="flex items-center gap-2">
               <Logo size={26} />
               <span className="font-semibold text-app-text text-sm">TrustEd</span>
+              {currentUser?.osVersion && (
+                <span className="text-[10px] text-app-faint">· OS {currentUser.osVersion}</span>
+              )}
             </div>
             <TrustedNav pendingConsents={pendingConsents} />
           </div>

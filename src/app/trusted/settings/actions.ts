@@ -5,9 +5,32 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { requireActionUser } from "@/lib/requireSession";
 import { prisma } from "@/lib/db";
+import { DEFAULT_VERSION } from "@/lib/osVersion";
 import type { GradeBand } from "@prisma/client";
 
 const VALID_GRADE_BANDS: GradeBand[] = ["K_5", "G6_8", "G9_12"];
+
+// Installs whatever the parent's district admin has currently approved in
+// GuardRail — never a value the parent chooses or types themselves, and
+// always recomputed server-side so the client can't request a different
+// target than what's actually published.
+export async function installOsUpdateAction() {
+  const session = await requireActionUser("PARENT");
+
+  const student = await prisma.student.findFirst({ where: { parentId: session.user.id }, select: { districtId: true } });
+  const district = student
+    ? await prisma.district.findUnique({ where: { id: student.districtId }, select: { osVersion: true } })
+    : null;
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { osVersion: district?.osVersion ?? DEFAULT_VERSION },
+  });
+
+  revalidatePath("/trusted/settings");
+  revalidatePath("/trusted");
+  redirect("/trusted/settings?osversioninstalled=1");
+}
 
 export async function addChildAction(formData: FormData) {
   const session = await requireActionUser("PARENT");

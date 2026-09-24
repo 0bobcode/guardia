@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { GuardRailNav } from "@/components/GuardRailNav";
 import { Logo } from "@/components/Logo";
 import { logoutAction } from "../logout-action";
@@ -10,10 +9,6 @@ export default async function GuardRailLayout({ children }: { children: React.Re
   if (!session?.user) redirect("/login");
   if (session.user.role !== "DISTRICT_ADMIN") redirect("/trusted");
 
-  const district = session.user.districtId
-    ? await prisma.district.findUnique({ where: { id: session.user.districtId }, select: { osVersion: true } })
-    : null;
-
   return (
     <div className="app-shell flex-1 flex min-h-screen">
       <aside className="w-60 shrink-0 bg-[#0b0f1c] border-r border-app-border text-slate-200 flex flex-col">
@@ -21,10 +16,7 @@ export default async function GuardRailLayout({ children }: { children: React.Re
           <Logo size={26} />
           <div>
             <p className="text-white text-sm font-semibold leading-none">GuardRail</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">
-              Compliance Console
-              {district?.osVersion && <span className="text-slate-600"> · {district.osVersion}</span>}
-            </p>
+            <p className="text-[10px] text-slate-400 mt-0.5">Compliance Console</p>
           </div>
         </div>
         <GuardRailNav />
