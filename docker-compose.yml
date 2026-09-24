@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: guardia
+      POSTGRES_PASSWORD: guardia
+      POSTGRES_DB: guardia_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - guardia_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guardia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      # Always the local container's Postgres — deliberately not
+      # ${DATABASE_URL} from .env, so this compose file can never point at
+      # a real/production database by accident.
+      DATABASE_URL: postgresql://guardia:guardia@db:5432/guardia_db
+      # Everything below is read from a .env file in this directory (Compose
+      # loads it automatically). See README.md for what each one is for.
+      AUTH_SECRET: "${AUTH_SECRET:?Set AUTH_SECRET in .env, e.g. openssl rand -base64 32}"
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      AZURE_AD_CLIENT_ID: ${AZURE_AD_CLIENT_ID:-}
+      AZURE_AD_CLIENT_SECRET: ${AZURE_AD_CLIENT_SECRET:-}
+      AZURE_AD_TENANT_ID: ${AZURE_AD_TENANT_ID:-}
+
+volumes:
+  guardia_db_data:

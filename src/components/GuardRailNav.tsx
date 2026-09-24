@@ -16,14 +16,14 @@ export function GuardRailNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex-1 px-3 py-4 space-y-1">
+    <nav className="flex md:block md:flex-1 overflow-x-auto dark-scroll gap-1 md:gap-0 md:space-y-1 px-3 py-2 md:py-4">
       {NAV.map((item) => {
         const active = item.href === "/guardrail" ? pathname === item.href : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
+            className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors shrink-0 whitespace-nowrap ${
               active ? "bg-white/10 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
             }`}
           >

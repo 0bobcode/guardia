@@ -15,14 +15,14 @@ export function TrustedNav({ pendingConsents }: { pendingConsents: number }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="flex items-center gap-1 overflow-x-auto dark-scroll -mx-4 px-4 md:mx-0 md:px-0">
       {NAV.map((item) => {
         const active = item.href === "/trusted" ? pathname === item.href : pathname.startsWith(item.href);
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`relative px-3 py-2 text-sm rounded-md transition-colors ${
+            className={`relative shrink-0 px-3 py-2 text-sm rounded-md transition-colors ${
               active ? "text-app-text bg-white/8" : "text-app-muted hover:text-app-text hover:bg-white/5"
             }`}
           >

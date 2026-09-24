@@ -19,39 +19,39 @@ export default async function TrustedLayout({ children }: { children: React.Reac
   return (
     <div className="app-shell flex-1 min-h-screen">
       <header className="border-b border-app-border bg-app-bg/80 backdrop-blur sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-6 flex items-center justify-between h-16">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 md:h-16 md:py-0 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center justify-between gap-3 md:contents">
+            <div className="flex items-center gap-2 shrink-0">
               <Logo size={26} />
               <span className="font-semibold text-app-text text-sm">TrustEd</span>
               {currentUser?.osVersion && (
-                <span className="text-[10px] text-app-faint">· OS {currentUser.osVersion}</span>
+                <span className="text-[10px] text-app-faint hidden sm:inline">· OS {currentUser.osVersion}</span>
               )}
             </div>
-            <TrustedNav pendingConsents={pendingConsents} />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-xs font-medium text-app-text leading-none">{session.user.name}</p>
+            <div className="flex items-center gap-3 md:order-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-xs font-medium text-app-text leading-none">{session.user.name}</p>
+              </div>
+              <div className="h-8 w-8 rounded-full bg-app-teal-soft text-app-teal flex items-center justify-center text-xs font-semibold border border-app-teal/30 shrink-0">
+                {session.user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  className="text-xs font-medium text-app-muted hover:text-app-text px-2 py-1 transition-colors"
+                >
+                  Sign out
+                </button>
+              </form>
             </div>
-            <div className="h-8 w-8 rounded-full bg-app-teal-soft text-app-teal flex items-center justify-center text-xs font-semibold border border-app-teal/30">
-              {session.user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </div>
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                className="text-xs font-medium text-app-muted hover:text-app-text px-2 py-1 transition-colors"
-              >
-                Sign out
-              </button>
-            </form>
           </div>
+          <TrustedNav pendingConsents={pendingConsents} />
         </div>
       </header>
-      <main className="max-w-4xl mx-auto">{children}</main>
+      <main className="max-w-4xl mx-auto px-0">{children}</main>
     </div>
   );
 }
