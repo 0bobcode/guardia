@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/db";
-import { generateAiReply } from "@/lib/aiProviders";
+import { runLocalBriefAi } from "@/lib/pythonAi";
 import type { RiskLevel } from "@prisma/client";
 
 // "Ask Guardia" — a Rolli-style natural-language brief. The stats and
 // highlights below are always computed directly from real rows (never from
-// the model), so the brief can't hallucinate a number; only the summary
-// sentence is optionally phrased by the model, with a plain templated
-// fallback when no provider key is configured.
+// the model), so the brief can't hallucinate a number. The summary sentence
+// itself is phrased by a small local, rule-based Python script (see
+// scripts/ask_brief_ai.py) — no external API, no key, no network call —
+// with a plain templated fallback if that script isn't available.
 
 export type BriefHighlight = { severity: "HIGH" | "MEDIUM" | "LOW"; title: string; detail: string };
 
@@ -48,19 +49,17 @@ function topCategories(events: { categories: string; riskLevel: RiskLevel }[], s
     }));
 }
 
-const ASK_SYSTEM_PROMPT =
-  "You answer questions about AI-safety monitoring data for either a parent (about their own child) or a school district admin (district-wide). " +
-  "You are given a question and a line of real, already-computed stats. Answer in 2-3 plain-English sentences using only those numbers — never invent a " +
-  "number, category, or example not given to you. Be calm and factual, not alarmist.";
-
 export async function buildStudentBrief(studentId: string, question: string): Promise<Brief> {
   const since = new Date(Date.now() - WINDOW_DAYS * 24 * 60 * 60 * 1000);
 
-  const messages = await prisma.sessionMessage.findMany({
-    where: { session: { studentId }, createdAt: { gte: since } },
-    include: { session: { include: { app: true } } },
-  });
-  const scanEvents = await prisma.scanEvent.findMany({ where: { studentId, createdAt: { gte: since } } });
+  const [student, messages, scanEvents] = await Promise.all([
+    prisma.student.findUnique({ where: { id: studentId }, select: { name: true } }),
+    prisma.sessionMessage.findMany({
+      where: { session: { studentId }, createdAt: { gte: since } },
+      include: { session: { include: { app: true } } },
+    }),
+    prisma.scanEvent.findMany({ where: { studentId, createdAt: { gte: since } } }),
+  ]);
 
   const flagged = scanEvents.filter((e) => e.riskLevel !== "NONE");
   const blocked = scanEvents.filter((e) => e.action === "BLOCKED");
@@ -71,34 +70,38 @@ export async function buildStudentBrief(studentId: string, question: string): Pr
 
   const highlights = topCategories(flagged, "message" + (flagged.length === 1 ? "" : "s"));
 
+  const stats = { totalMessages: messages.length, flaggedCount: flagged.length, blockedCount: blocked.length, topApp };
+
   const statsLine =
     `${messages.length} messages across ${appCounts.size} app${appCounts.size === 1 ? "" : "s"} in the last ${WINDOW_DAYS} days. ` +
     `${flagged.length} flagged, ${blocked.length} blocked. ` +
     (highlights.length ? `Top categories: ${highlights.map((h) => h.title).join(", ")}.` : "No policy matches.");
 
-  const { text, live } = await generateAiReply(
-    "anthropic",
-    "claude-sonnet-5",
-    ASK_SYSTEM_PROMPT,
-    `Parent's question about their child: "${question}"\n\nReal stats: ${statsLine}`
-  );
+  const aiSummary = await runLocalBriefAi({
+    scope: "student",
+    subject: student?.name ?? "this child",
+    question,
+    windowDays: WINDOW_DAYS,
+    stats,
+    highlights,
+  });
 
   return {
-    summary: live && text ? text : statsLine,
+    summary: aiSummary ?? statsLine,
     windowDays: WINDOW_DAYS,
-    stats: { totalMessages: messages.length, flaggedCount: flagged.length, blockedCount: blocked.length, topApp },
+    stats,
     highlights,
-    live,
+    live: aiSummary !== null,
   };
 }
 
 export async function buildDistrictBrief(districtId: string, question: string): Promise<Brief> {
   const since = new Date(Date.now() - WINDOW_DAYS * 24 * 60 * 60 * 1000);
 
-  const events = await prisma.scanEvent.findMany({
-    where: { districtId, createdAt: { gte: since } },
-    include: { app: true },
-  });
+  const [district, events] = await Promise.all([
+    prisma.district.findUnique({ where: { id: districtId }, select: { name: true } }),
+    prisma.scanEvent.findMany({ where: { districtId, createdAt: { gte: since } }, include: { app: true } }),
+  ]);
   const flagged = events.filter((e) => e.riskLevel !== "NONE");
   const blocked = events.filter((e) => e.action === "BLOCKED");
 
@@ -108,23 +111,27 @@ export async function buildDistrictBrief(districtId: string, question: string): 
 
   const highlights = topCategories(flagged, "scan" + (flagged.length === 1 ? "" : "s") + " district-wide");
 
+  const stats = { totalMessages: events.length, flaggedCount: flagged.length, blockedCount: blocked.length, topApp };
+
   const statsLine =
     `${events.length} scans across ${appCounts.size} app${appCounts.size === 1 ? "" : "s"} district-wide in the last ${WINDOW_DAYS} days. ` +
     `${flagged.length} flagged, ${blocked.length} blocked. ` +
     (highlights.length ? `Top categories: ${highlights.map((h) => h.title).join(", ")}.` : "No policy matches.");
 
-  const { text, live } = await generateAiReply(
-    "anthropic",
-    "claude-sonnet-5",
-    ASK_SYSTEM_PROMPT,
-    `District admin's question: "${question}"\n\nReal stats: ${statsLine}`
-  );
+  const aiSummary = await runLocalBriefAi({
+    scope: "district",
+    subject: district?.name ?? "the district",
+    question,
+    windowDays: WINDOW_DAYS,
+    stats,
+    highlights,
+  });
 
   return {
-    summary: live && text ? text : statsLine,
+    summary: aiSummary ?? statsLine,
     windowDays: WINDOW_DAYS,
-    stats: { totalMessages: events.length, flaggedCount: flagged.length, blockedCount: blocked.length, topApp },
+    stats,
     highlights,
-    live,
+    live: aiSummary !== null,
   };
 }
