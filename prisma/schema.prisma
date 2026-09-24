@@ -42,6 +42,9 @@ model District {
   id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
+  // Platform version label shown in the GuardRail sidebar, e.g. "OS 22" —
+  // purely informational, set by the district admin from Settings.
+  osVersion String   @default("OS 22")
 
   users        User[]
   apps         App[]

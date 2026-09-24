@@ -1,10 +1,18 @@
+import { Suspense } from "react";
 import { requireRole } from "@/lib/requireSession";
 import { prisma } from "@/lib/db";
 import { PROVIDERS, providerConnected, providerLabel } from "@/lib/aiProviders";
+import { Toast } from "@/components/Toast";
+import { updateOsVersionAction } from "./actions";
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; osversionsaved?: string }>;
+}) {
   const session = await requireRole("DISTRICT_ADMIN");
   const districtId = session!.user.districtId!;
+  const params = await searchParams;
   const district = await prisma.district.findUnique({
     where: { id: districtId },
     include: { apps: { where: { name: { not: "Policy Tester" } } } },
@@ -35,6 +43,30 @@ export default async function SettingsPage() {
             <p className="text-app-text font-medium">Compliance Suite</p>
           </div>
         </div>
+      </div>
+
+      <div className="app-card rounded-xl p-5 mb-6">
+        <h2 className="text-sm font-semibold text-app-text mb-1">Platform</h2>
+        <p className="text-xs text-app-muted mb-3">
+          Shown next to the GuardRail logo in the sidebar — a version label for your own reference.
+        </p>
+        <form action={updateOsVersionAction} className="flex items-center gap-2">
+          <input
+            name="osVersion"
+            defaultValue={district?.osVersion}
+            maxLength={30}
+            className="app-input rounded-md px-3 py-2 text-sm text-app-text w-48"
+          />
+          <button
+            type="submit"
+            className="text-xs font-semibold px-3 py-2 rounded-md bg-app-teal text-[#04211d] hover:opacity-90 transition-all"
+          >
+            Save
+          </button>
+        </form>
+        {params.error === "osversion" && (
+          <p className="text-xs text-red-400 mt-2">Enter a version label first.</p>
+        )}
       </div>
 
       <div className="app-card rounded-xl p-5 mb-6">
@@ -104,6 +136,10 @@ export default async function SettingsPage() {
           {"\n\n"}→ {"{"} &quot;action&quot;: &quot;PASSED&quot;, &quot;reply&quot;: {"{"} &quot;text&quot;: &quot;...&quot;, &quot;live&quot;: true {"}"} {"}"}
         </div>
       </div>
+
+      <Suspense fallback={null}>
+        <Toast paramKey="osversionsaved" message="Platform version updated" />
+      </Suspense>
     </div>
   );
 }
