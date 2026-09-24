@@ -22,6 +22,9 @@ export function MarketingHeader() {
         <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
           <Logo size={30} className="transition-transform group-hover:scale-105" />
           <span className="font-semibold text-white tracking-tight">GUARDIA</span>
+          <span className="text-[10px] font-semibold tracking-wide text-brand-teal border border-brand-teal/30 bg-brand-teal/10 rounded-full px-1.5 py-0.5 -ml-1">
+            OS 22
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
