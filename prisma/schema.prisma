@@ -98,13 +98,18 @@ model Student {
 // code for a long-lived token on first launch, then authenticates future
 // ingest calls with the token.
 model DevicePairing {
-  id         String    @id @default(cuid())
-  pairCode   String    @unique
-  token      String    @unique @default(cuid())
-  deviceName String?
-  createdAt  DateTime  @default(now())
-  pairedAt   DateTime?
-  lastSeenAt DateTime?
+  id                 String    @id @default(cuid())
+  pairCode           String    @unique
+  token              String    @unique @default(cuid())
+  deviceName         String?
+  createdAt          DateTime  @default(now())
+  pairedAt           DateTime?
+  lastSeenAt         DateTime?
+  // Set from TrustEd's Settings page; when present, the browser extension
+  // must send the matching password to /api/device/unpair before it can
+  // unpair itself — lets a parent gate unpairing remotely, without touching
+  // the child's browser.
+  unpairPasswordHash String?
 
   studentId String
   student   Student @relation(fields: [studentId], references: [id])

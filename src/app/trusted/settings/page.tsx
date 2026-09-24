@@ -13,6 +13,7 @@ import {
   removeAppFromChildAction,
   addDevicePairingAction,
   removeDevicePairingAction,
+  setUnpairPasswordAction,
 } from "./actions";
 
 const LIMIT_OPTIONS = [0.5, 1, 1.5, 2, 3, 4, 6];
@@ -28,6 +29,7 @@ const ERRORS: Record<string, string> = {
   childemail: "That doesn't look like a valid email.",
   childpassword: "Password must be at least 6 characters.",
   noapp: "Choose an app to add.",
+  unpairpassword: "Unpair password must be at least 4 characters.",
 };
 
 export default async function TrustedSettingsPage({
@@ -208,34 +210,55 @@ export default async function TrustedSettingsPage({
 
               <div className="space-y-1.5">
                 {student.devicePairings.map((d) => (
-                  <div
-                    key={d.id}
-                    className="flex items-center justify-between text-xs border border-app-border rounded-md px-3 py-2"
-                  >
-                    <div className="min-w-0">
-                      <span className="text-app-text font-medium">
-                        {d.deviceName || (d.pairedAt ? "Unnamed device" : `Code ${d.pairCode} — waiting`)}
-                      </span>
-                      <span className="text-app-faint block">
-                        {d.pairedAt
-                          ? d.lastSeenAt
-                            ? `Last active ${formatDateTime(d.lastSeenAt)}`
-                            : "Paired, no activity yet"
-                          : "Not paired yet"}
-                      </span>
+                  <div key={d.id} className="border border-app-border rounded-md px-3 py-2 text-xs">
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0">
+                        <span className="text-app-text font-medium">
+                          {d.deviceName || (d.pairedAt ? "Unnamed device" : `Code ${d.pairCode} — waiting`)}
+                        </span>
+                        <span className="text-app-faint block">
+                          {d.pairedAt
+                            ? d.lastSeenAt
+                              ? `Last active ${formatDateTime(d.lastSeenAt)}`
+                              : "Paired, no activity yet"
+                            : "Not paired yet"}
+                        </span>
+                      </div>
+                      <form action={removeDevicePairingAction}>
+                        <input type="hidden" name="pairingId" value={d.id} />
+                        <button
+                          type="submit"
+                          title="Remove device"
+                          className="text-app-faint hover:text-red-400 transition-colors p-1 shrink-0"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                      </form>
                     </div>
-                    <form action={removeDevicePairingAction}>
-                      <input type="hidden" name="pairingId" value={d.id} />
-                      <button
-                        type="submit"
-                        title="Remove device"
-                        className="text-app-faint hover:text-red-400 transition-colors p-1 shrink-0"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                        </svg>
-                      </button>
-                    </form>
+                    {d.pairedAt && (
+                      <form action={setUnpairPasswordAction} className="flex items-center gap-1.5 mt-2 pt-2 border-t border-app-border/60">
+                        <input type="hidden" name="pairingId" value={d.id} />
+                        <input
+                          name="unpairPassword"
+                          type="password"
+                          placeholder={d.unpairPasswordHash ? "Change unpair password" : "Set unpair password"}
+                          className="app-input flex-1 min-w-0 rounded-md px-2 py-1 text-xs text-app-text"
+                        />
+                        <button
+                          type="submit"
+                          className="text-[11px] font-semibold px-2 py-1 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] transition-colors shrink-0"
+                        >
+                          Save
+                        </button>
+                        {d.unpairPasswordHash && (
+                          <span className="text-app-faint shrink-0" title="Extension requires this password to unpair">
+                            🔒 set
+                          </span>
+                        )}
+                      </form>
+                    )}
                   </div>
                 ))}
                 {student.devicePairings.length === 0 && (
@@ -355,6 +378,12 @@ export default async function TrustedSettingsPage({
       </Suspense>
       <Suspense fallback={null}>
         <Toast paramKey="deviceremoved" message="Device removed" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Toast paramKey="unpairpasswordset" message="Unpair password set" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Toast paramKey="unpairpasswordcleared" message="Unpair password cleared" />
       </Suspense>
     </div>
   );

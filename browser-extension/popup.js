@@ -3,7 +3,6 @@ const statusDot = document.getElementById("statusDot");
 const statusText = document.getElementById("statusText");
 const pairForm = document.getElementById("pairForm");
 const pairCodeInput = document.getElementById("pairCode");
-const pairPasswordInput = document.getElementById("pairPassword");
 const pairError = document.getElementById("pairError");
 const pairButton = document.getElementById("pairButton");
 const unpairSection = document.getElementById("unpairSection");
@@ -12,11 +11,9 @@ const unpairPasswordInput = document.getElementById("unpairPassword");
 const unpairError = document.getElementById("unpairError");
 const unpairButton = document.getElementById("unpairButton");
 
-let requiresPasswordToUnpair = false;
 let awaitingUnpairConfirm = false;
 
 function render(status) {
-  requiresPasswordToUnpair = !!status.hasPassword;
   awaitingUnpairConfirm = false;
   unpairPrompt.style.display = "none";
   unpairError.style.display = "none";
@@ -45,11 +42,10 @@ function refresh() {
 pairButton.addEventListener("click", () => {
   const pairCode = pairCodeInput.value.trim().toUpperCase();
   if (!pairCode) return;
-  const password = pairPasswordInput.value; // optional — empty means no unpair gate
   pairError.style.display = "none";
   pairButton.disabled = true;
   pairButton.textContent = "Pairing…";
-  chrome.runtime.sendMessage({ type: "GUARDIA_PAIR", pairCode, password }, (result) => {
+  chrome.runtime.sendMessage({ type: "GUARDIA_PAIR", pairCode }, (result) => {
     pairButton.disabled = false;
     pairButton.textContent = "Pair device";
     if (!result) {
@@ -62,8 +58,10 @@ pairButton.addEventListener("click", () => {
 });
 
 unpairButton.addEventListener("click", () => {
-  if (requiresPasswordToUnpair && !awaitingUnpairConfirm) {
+  if (!awaitingUnpairConfirm) {
     // First click just reveals the password field — don't unpair yet.
+    // Whether a password is actually required is decided server-side
+    // (set from TrustEd), so this popup shows the field either way.
     awaitingUnpairConfirm = true;
     unpairPrompt.style.display = "block";
     unpairButton.textContent = "Confirm unpair";

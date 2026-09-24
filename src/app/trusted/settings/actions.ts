@@ -170,6 +170,26 @@ export async function removeDevicePairingAction(formData: FormData) {
   redirect("/trusted/settings?deviceremoved=1");
 }
 
+// Sets, changes, or clears the password the Guardia browser extension must
+// be given before it will unpair itself — lets a parent gate/change this
+// remotely from TrustEd instead of relying on the extension's own popup.
+export async function setUnpairPasswordAction(formData: FormData) {
+  const session = await requireActionUser("PARENT");
+
+  const pairingId = String(formData.get("pairingId"));
+  const password = String(formData.get("unpairPassword") ?? "");
+  const pairing = await prisma.devicePairing.findUnique({ where: { id: pairingId }, include: { student: true } });
+  if (!pairing || pairing.student.parentId !== session.user.id) throw new Error("Not found");
+
+  if (password && password.length < 4) redirect("/trusted/settings?error=unpairpassword");
+
+  const unpairPasswordHash = password ? await bcrypt.hash(password, 10) : null;
+  await prisma.devicePairing.update({ where: { id: pairingId }, data: { unpairPasswordHash } });
+
+  revalidatePath("/trusted/settings");
+  redirect(password ? "/trusted/settings?unpairpasswordset=1" : "/trusted/settings?unpairpasswordcleared=1");
+}
+
 export async function removeAppFromChildAction(formData: FormData) {
   const session = await requireActionUser("PARENT");
 
