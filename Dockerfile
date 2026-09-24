@@ -26,6 +26,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # placeholder keeps `prisma generate`/`next build` from complaining if
 # either ever validates the env var is merely present.
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/guardia_db"
+ENV DOCKER_BUILD=1
 RUN npx prisma generate
 RUN npm run build
 

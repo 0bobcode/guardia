@@ -16,9 +16,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Self-contained server bundle for the Docker image; Vercel ignores this
-  // and uses its own builder regardless, so it's safe to leave on for both.
-  output: "standalone",
+  // Self-contained server bundle, needed for the Docker image — but
+  // Vercel's own build pipeline expects the normal `.next` output layout
+  // and breaks on this (missing trace files), so it's only turned on
+  // inside the Dockerfile, which sets DOCKER_BUILD=1 before `next build`.
+  ...(process.env.DOCKER_BUILD ? { output: "standalone" as const } : {}),
   turbopack: {
     root: __dirname,
   },
