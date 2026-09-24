@@ -3,7 +3,6 @@ import { Logo } from "@/components/Logo";
 import { SubmitButton } from "@/components/SubmitButton";
 import { microsoftEntraEnabled } from "@/lib/auth";
 import { loginAction, loginWithMicrosoftAction } from "./actions";
-import { demoLoginAction } from "./demo-actions";
 
 export default async function LoginPage({
   searchParams,
@@ -105,30 +104,6 @@ export default async function LoginPage({
               Create an account
             </Link>
           </p>
-        </div>
-
-        <div className="mt-6 app-card rounded-xl p-5 load-in" style={{ animationDelay: "160ms" }}>
-          <p className="text-xs font-semibold text-app-text mb-3">Try it without an account</p>
-          <div className="grid grid-cols-2 gap-2">
-            <form action={demoLoginAction}>
-              <input type="hidden" name="role" value="admin" />
-              <SubmitButton
-                pendingLabel="Loading…"
-                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] active:scale-[0.98] transition-all"
-              >
-                View as district admin
-              </SubmitButton>
-            </form>
-            <form action={demoLoginAction}>
-              <input type="hidden" name="role" value="parent" />
-              <SubmitButton
-                pendingLabel="Loading…"
-                className="w-full text-xs font-medium px-3 py-2.5 rounded-md border border-app-border text-app-text hover:border-app-teal/40 hover:bg-white/[0.03] active:scale-[0.98] transition-all"
-              >
-                View as a parent
-              </SubmitButton>
-            </form>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-app-muted load-in" style={{ animationDelay: "220ms" }}>
