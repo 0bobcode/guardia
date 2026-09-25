@@ -58,7 +58,7 @@ export default async function AlertsPage({
             </a>
           ))}
         </div>
-        <form action="/guardrail/alerts" className="flex items-center gap-2">
+        <form action="/guardrail/alerts" className="flex flex-wrap items-center gap-2">
           {riskFilter !== "ALL" && <input type="hidden" name="risk" value={riskFilter} />}
           <div className="relative">
             <svg

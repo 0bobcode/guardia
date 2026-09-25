@@ -171,7 +171,7 @@ export default async function TrustedSettingsPage({
                 <select
                   name="appId"
                   defaultValue=""
-                  className="flex-1 text-xs border border-app-border rounded-md px-2 py-1.5 bg-app-surface-2 text-app-text"
+                  className="flex-1 min-w-0 text-xs border border-app-border rounded-md px-2 py-1.5 bg-app-surface-2 text-app-text"
                 >
                   <option value="" disabled>
                     Add another app…

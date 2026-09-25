@@ -68,17 +68,17 @@ export function GuardRailPreview() {
           {ROWS.map((r, i) => (
             <div
               key={r.time}
-              className="msg-row grid grid-cols-[52px_1fr_auto_auto] items-center gap-3 text-[11px] rounded-md px-2 py-1.5 transition-colors duration-500"
+              className="msg-row grid grid-cols-[1fr_auto_auto] sm:grid-cols-[52px_1fr_auto_auto] items-center gap-2 sm:gap-3 text-[11px] rounded-md px-2 py-1.5 transition-colors duration-500"
               style={{
                 animationDelay: `${i * 90}ms`,
                 animationPlayState: visible ? "running" : "paused",
                 backgroundColor: flashIndex === i ? "rgba(45, 212, 191, 0.08)" : "transparent",
               }}
             >
-              <span className="font-mono text-slate-500">{r.time}</span>
+              <span className="font-mono text-slate-500 hidden sm:block">{r.time}</span>
               <span className="text-slate-300 truncate">
                 <span className="text-white font-medium">{r.app}</span>
-                <span className="text-slate-500"> · &ldquo;{r.query}&rdquo;</span>
+                <span className="text-slate-500 hidden sm:inline"> · &ldquo;{r.query}&rdquo;</span>
               </span>
               <RiskBadge level={r.risk} />
               <span className={`font-medium ${ACTION_COLOR[r.action]}`}>{r.action}</span>

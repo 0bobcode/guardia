@@ -98,7 +98,7 @@ export default async function ReportsPage() {
         <div className="px-5 py-4 border-b border-app-border">
           <h2 className="text-sm font-semibold text-app-text">State Regulatory Frameworks</h2>
         </div>
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto dark-scroll"><table className="w-full text-sm">
           <thead>
             <tr className="text-left text-xs text-app-muted border-b border-app-border">
               <th className="px-5 py-2 font-medium">State</th>
@@ -125,7 +125,7 @@ export default async function ReportsPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   );

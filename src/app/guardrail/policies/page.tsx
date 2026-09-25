@@ -105,7 +105,7 @@ export default async function PoliciesPage({
                 rows={2}
                 className="w-full text-sm border border-app-border rounded-md px-3 py-2 bg-app-surface-2 text-app-text focus:outline-none focus:ring-2 focus:ring-app-teal font-mono"
               />
-              <div className="flex items-center justify-between mt-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
                 <div className="flex items-center gap-2">
                   <label className="text-xs font-medium text-app-muted">Action when matched</label>
                   <select
@@ -162,7 +162,7 @@ export default async function PoliciesPage({
               rows={2}
               className="w-full text-sm border border-app-border rounded-md px-3 py-2 bg-app-surface-2 text-app-text focus:outline-none focus:ring-2 focus:ring-app-teal font-mono"
             />
-            <div className="flex items-center justify-between mt-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
               <div className="flex items-center gap-2">
                 <label className="text-xs font-medium text-app-muted">Action when matched</label>
                 <select
@@ -234,7 +234,7 @@ export default async function PoliciesPage({
               className="w-full text-sm border border-app-border rounded-md px-3 py-2 bg-app-surface-2 text-app-text focus:outline-none focus:ring-2 focus:ring-app-teal font-mono"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-app-muted">Action when matched</label>
               <select
