@@ -63,6 +63,17 @@ export default function PrivacyPage() {
               long those apps were used.
             </li>
             <li>
+              <strong>From the Guardia Companion browser extension:</strong> once a parent enters a
+              pairing code in the extension, it reads the text already visible on screen — the
+              student&apos;s typed message and the AI&apos;s reply — specifically on gemini.google.com,
+              chatgpt.com, chat.openai.com, and claude.ai, and sends it to the linked parent&apos;s
+              TrustEd dashboard. It does not read any other website, does not log keystrokes as they
+              are typed, and does not take screenshots or record video; it only reads a message once
+              it has actually been sent or received. Before pairing, the extension does not read,
+              store, or transmit any page content. The extension stores only its pairing token locally
+              in the browser.
+            </li>
+            <li>
               <strong>Policy configuration:</strong> the content-risk categories and custom policies a
               district administrator sets up in GuardRail.
             </li>
