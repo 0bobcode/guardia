@@ -19,6 +19,16 @@
       "matches": ["https://gemini.google.com/*"],
       "js": ["sites/gemini.js", "content.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["sites/chatgpt.js", "content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["sites/claude.js", "content.js"],
+      "run_at": "document_idle"
     }
   ],
   "action": {
