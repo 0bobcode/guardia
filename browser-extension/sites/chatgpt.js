@@ -1,50 +1,61 @@
-// Site adapter for chatgpt.com — real selectors confirmed by inspecting a
-// live conversation's DOM directly (not guessed). ChatGPT's current web
-// shell ("Octane") is a rewrite unlike older/training-data ChatGPT markup —
-// no `data-message-author-role`, no `.markdown` class on replies.
+// Site adapter for chatgpt.com — ChatGPT serves TWO different web UIs
+// depending on account state, confirmed by inspecting both live (not
+// guessed): an anonymous/guest session gets a newer shell ("Octane") with
+// <li data-message-role>; a signed-in account gets the older/classic
+// structure below, which is what actually matters for real usage since a
+// monitored child's account is always signed in.
 //
+// Classic (signed-in) structure:
+//   <section data-testid="conversation-turn-N" data-turn="user|assistant">
+//     ...<div data-message-author-role="user" data-message-id="...">the text</div>...
+//   </section>
+//
+// Octane (anonymous) structure:
 //   <ol data-conversation-transcript>
-//     <li data-message-role="user">
-//       <h4 data-message-attribution>You said:</h4>
-//       ...<p data-user-message-copy>the typed text</p>...
-//     </li>
-//     <li data-message-role="assistant">
-//       <h4 data-message-attribution>ChatGPT said:</h4>
-//       ...<div data-assistant-markdown>the rendered reply</div>...
-//     </li>
+//     <li data-message-role="user">...<p data-user-message-copy>the text</p>...</li>
+//     <li data-message-role="assistant">...<div data-assistant-markdown>the reply</div>...</li>
 //   </ol>
 //
-// data-assistant-markdown holds only the reply's rendered markdown — the
-// "ChatGPT said:" attribution and the copy/share action buttons sit
-// outside it, so reading just this div (like Gemini's <message-content>)
-// avoids capturing UI chrome.
+// Both are handled here so this keeps working regardless of which shell a
+// given session gets.
 window.__guardiaSiteAdapter = {
   packageId: location.hostname.includes("chat.openai.com") ? "chat.openai.com" : "chatgpt.com",
 
   getContainer() {
-    return document.querySelector("[data-conversation-transcript]");
+    return (
+      document.querySelector("[data-conversation-transcript]") ||
+      document.querySelector("main") ||
+      document.body
+    );
   },
 
   isUserMessage(node) {
-    return node.tagName === "LI" && node.getAttribute("data-message-role") === "user";
+    if (node.tagName === "LI" && node.getAttribute("data-message-role") === "user") return true;
+    return node.getAttribute?.("data-message-author-role") === "user";
   },
 
   isAssistantMessage(node) {
-    return node.tagName === "LI" && node.getAttribute("data-message-role") === "assistant";
+    if (node.tagName === "LI" && node.getAttribute("data-message-role") === "assistant") return true;
+    return node.getAttribute?.("data-message-author-role") === "assistant";
   },
 
   // A user turn can be multiple paragraphs (Shift+Enter) — each is its own
-  // [data-user-message-copy], so join them rather than reading just the first.
+  // [data-user-message-copy] in the Octane shell, so join them rather than
+  // reading just the first. The classic shell just uses innerText directly.
   extractUserText(node) {
     const paras = node.querySelectorAll("[data-user-message-copy]");
-    return Array.from(paras)
-      .map((p) => p.innerText.trim())
-      .filter(Boolean)
-      .join("\n");
+    if (paras.length) {
+      return Array.from(paras)
+        .map((p) => p.innerText.trim())
+        .filter(Boolean)
+        .join("\n");
+    }
+    return node.innerText?.trim() ?? "";
   },
 
   extractAssistantText(node) {
     const content = node.querySelector("[data-assistant-markdown]");
-    return content ? content.innerText.trim() : "";
+    if (content) return content.innerText.trim();
+    return node.innerText?.trim() ?? "";
   },
 };

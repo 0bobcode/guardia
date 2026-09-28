@@ -17,7 +17,10 @@
     clearTimeout(pendingTimers.get(node));
     const timer = setTimeout(() => {
       const text = extract(node);
-      if (!text || text.length < 3) return;
+      // Only filter genuinely empty extractions — a real 2-letter word like
+      // "hi" or "ok" is legitimate content, not noise, and was previously
+      // silently dropped by a `length < 3` floor here.
+      if (!text) return;
       if (lastSentText.get(node) === text) return;
       lastSentText.set(node, text);
       chrome.runtime.sendMessage({
@@ -72,7 +75,14 @@
         if (owner) handleNode(owner);
       }
     });
-    observer.observe(container, { childList: true, subtree: true, characterData: true });
+    // attributes:true matters beyond just "an attribute changed on an
+    // existing message" (the streaming-reply case above) — ChatGPT's
+    // classic (signed-in) UI inserts a plain, unattributed div for the
+    // student's own message first, then attaches data-message-author-role
+    // to it moments later as a separate attribute mutation. Without
+    // watching attributes, that node's role attribute changing was never
+    // observed, so the student's own message was silently never sent.
+    observer.observe(container, { childList: true, subtree: true, characterData: true, attributes: true });
   }
 
   function init() {
