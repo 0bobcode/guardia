@@ -6,6 +6,7 @@ import { RiskGauge } from "@/components/charts/RiskGauge";
 import { RiskBreakdownBars } from "@/components/charts/RiskBreakdownBars";
 import { weightedRiskScore, countByRiskLevel } from "@/lib/risk";
 import { AskGuardia } from "@/components/AskGuardia";
+import { Avatar } from "@/components/Avatar";
 import { askGuardiaForStudent } from "./askActions";
 
 function greeting() {
@@ -48,6 +49,15 @@ export default async function TrustedDashboard() {
 
   return (
     <div className="px-6 py-8">
+      <h1 className="text-xl font-semibold text-app-text load-in">
+        {greeting()}, {session!.user.name.split(" ")[0]} 👋
+      </h1>
+      <p className="text-sm text-app-muted mt-1 mb-8 load-in">
+        {students.length === 1
+          ? `${students[0].name}'s ${students[0].enrollments.length} school apps are monitored · Live`
+          : `Watching over ${students.length} students · Live`}
+      </p>
+
       {students.map((student) => {
         const totalMinutes = student.enrollments.reduce((sum, e) => sum + e.usedTodayMin, 0);
         const flagsForStudent = todaysFlags.filter((f) => f.studentId === student.id);
@@ -59,12 +69,17 @@ export default async function TrustedDashboard() {
 
         return (
           <div key={student.id} className="mb-10">
-            <h1 className="text-xl font-semibold text-app-text load-in">
-              {greeting()}, {session!.user.name.split(" ")[0]} 👋
-            </h1>
-            <p className="text-sm text-app-muted mt-1 load-in">
-              {student.name}&apos;s {student.enrollments.length} school apps are monitored · Live
-            </p>
+            {students.length > 1 && (
+              <div className="flex items-center gap-3 mb-2 load-in">
+                <Avatar name={student.name} size={40} />
+                <div>
+                  <h2 className="text-base font-semibold text-app-text leading-tight">{student.name}</h2>
+                  <p className="text-xs text-app-muted">
+                    {student.enrollments.length} school apps monitored · Live
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="mt-6">
               <AskGuardia

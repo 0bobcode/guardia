@@ -17,7 +17,7 @@ const HOW_IT_WORKS = [
   },
   {
     title: "REST API Integration",
-    detail: "Standard API — any AI platform, any language. Average integration time under 4 hours.",
+    detail: "Standard API — any AI platform, any language. Built to integrate in under 4 hours.",
   },
   {
     title: "Policy Management",
@@ -30,6 +30,8 @@ export default function GuardRailPage() {
     <>
       <section className="bg-brand-navy text-white">
         <div className="mx-auto max-w-4xl px-6 py-20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/guardrail-logo.png" alt="GuardRail" className="h-8 w-auto mb-6" />
           <p className="text-brand-teal text-sm font-semibold tracking-wide uppercase mb-4">
             AI Safety Compliance API
           </p>

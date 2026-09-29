@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { GuardRailPreview } from "@/components/marketing/GuardRailPreview";
-import { LiveDemo } from "@/components/marketing/LiveDemo";
-import { LiveBadgeCounter } from "@/components/marketing/LiveBadgeCounter";
+import { InteractiveScanDemo } from "@/components/marketing/InteractiveScanDemo";
 import { Reveal } from "@/components/marketing/Reveal";
 import { CountUp } from "@/components/marketing/CountUp";
 import { AnimatedWaves } from "@/components/marketing/AnimatedWaves";
@@ -47,7 +46,7 @@ const STEPS = [
   {
     n: "01",
     title: "Point traffic at GuardRail",
-    body: "One REST endpoint. Any AI app, any language. Most vendors are live in under 4 hours.",
+    body: "One REST endpoint. Any AI app, any language. Built to integrate in under 4 hours.",
   },
   {
     n: "02",
@@ -68,9 +67,9 @@ export default function Home() {
 
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 pt-28 pb-20 relative">
-          <div className="load-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200 mb-7 tabular-nums">
+          <div className="load-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200 mb-7">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-teal animate-pulse" />
-            <LiveBadgeCounter />
+            Real-time scanning for Gemini, ChatGPT &amp; Claude
           </div>
           <h1
             className="load-in text-5xl sm:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05]"
@@ -83,7 +82,7 @@ export default function Home() {
             style={{ animationDelay: "140ms" }}
           >
             GuardRail scans every message before it reaches a child. TrustEd shows their parent
-            exactly what happened next. Nothing slips through either side.
+            exactly what happened next — so parents are never the last to find out.
           </p>
           <div className="load-in mt-10 flex flex-wrap gap-4" style={{ animationDelay: "210ms" }}>
             <Link
@@ -96,6 +95,12 @@ export default function Home() {
               </svg>
             </Link>
             <Link
+              href="#demo"
+              className="px-5 py-3 rounded-md border border-brand-teal/40 text-brand-teal font-semibold hover:bg-brand-teal/10 hover:border-brand-teal/60 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+            >
+              Try the interactive demo ↓
+            </Link>
+            <Link
               href="/products/guardrail"
               className="px-5 py-3 rounded-md border border-white/20 text-white font-semibold hover:bg-white/5 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
@@ -105,41 +110,41 @@ export default function Home() {
         </div>
 
         <div
-          className="load-in mx-auto max-w-6xl px-6 pb-28 relative grid md:grid-cols-2 gap-5"
+          id="demo"
+          className="load-in mx-auto max-w-6xl px-6 pb-28 relative grid md:grid-cols-2 gap-5 scroll-mt-24"
           style={{ animationDelay: "280ms" }}
         >
           <GuardRailPreview />
-          <LiveDemo />
+          <InteractiveScanDemo />
         </div>
       </section>
 
       <section className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl px-6 py-10 grid sm:grid-cols-4 gap-6 text-center sm:text-left">
+        <div className="mx-auto max-w-6xl px-6 pt-10 pb-6 grid sm:grid-cols-3 gap-6 text-center sm:text-left">
           <Reveal>
-            <p className="text-2xl font-bold text-white tabular-nums">
-              <CountUp end={15} suffix="+" />
-            </p>
-            <p className="text-xs text-slate-400 mt-1">States with pending AI child-safety laws</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <p className="text-2xl font-bold text-white tabular-nums">
-              <CountUp end={50} prefix="$" suffix="B+" />
-            </p>
-            <p className="text-xs text-slate-400 mt-1">Ed-tech market lacking compliance infra</p>
-          </Reveal>
-          <Reveal delay={160}>
             <p className="text-2xl font-bold text-white tabular-nums">
               <CountUp end={56} suffix="M+" />
             </p>
-            <p className="text-xs text-slate-400 mt-1">K-12 students in the US</p>
+            <p className="text-xs text-slate-400 mt-1">K-12 students in the US¹</p>
           </Reveal>
-          <Reveal delay={240}>
+          <Reveal delay={80}>
+            <p className="text-2xl font-bold text-white tabular-nums">
+              <CountUp end={15} suffix="+" />
+            </p>
+            <p className="text-xs text-slate-400 mt-1">States actively legislating AI/child online safety²</p>
+          </Reveal>
+          <Reveal delay={160}>
             <p className="text-2xl font-bold text-white tabular-nums">
               <CountUp end={4} prefix="<" suffix="h" />
             </p>
-            <p className="text-xs text-slate-400 mt-1">Average GuardRail integration time</p>
+            <p className="text-xs text-slate-400 mt-1">Design target for GuardRail integration³</p>
           </Reveal>
         </div>
+        <p className="mx-auto max-w-6xl px-6 pb-6 text-[11px] text-slate-500 leading-relaxed">
+          ¹ National Center for Education Statistics, public + private K-12 enrollment. &nbsp; ² Based on
+          public legislative tracking; changes as states introduce or pass bills. &nbsp; ³ A target
+          for a single REST integration, not yet measured across live customers.
+        </p>
       </section>
 
       <section className="relative mx-auto max-w-6xl px-6 py-20">

@@ -11,6 +11,8 @@ export default function TrustedPage() {
     <>
       <section className="bg-brand-navy text-white">
         <div className="mx-auto max-w-4xl px-6 py-20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/trusted-logo.png" alt="TrustEd" className="h-8 w-auto mb-6" />
           <p className="text-brand-teal text-sm font-semibold tracking-wide uppercase mb-4">
             Parental Controls SDK
           </p>

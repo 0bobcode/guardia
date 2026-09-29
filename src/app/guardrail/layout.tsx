@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { GuardRailNav } from "@/components/GuardRailNav";
-import { Logo } from "@/components/Logo";
 import { logoutAction } from "../logout-action";
 
 export default async function GuardRailLayout({ children }: { children: React.ReactNode }) {
@@ -14,10 +13,10 @@ export default async function GuardRailLayout({ children }: { children: React.Re
       <aside className="w-full md:w-60 md:shrink-0 bg-[#0b0f1c] border-b md:border-b-0 md:border-r border-app-border text-slate-200 flex flex-col sticky top-0 z-40 md:static">
         <div className="px-4 sm:px-5 py-3 md:py-5 flex items-center justify-between md:justify-start gap-2 border-b border-white/10">
           <div className="flex items-center gap-2 min-w-0">
-            <Logo size={26} />
             <div className="min-w-0">
-              <p className="text-white text-sm font-semibold leading-none">GuardRail</p>
-              <p className="text-[10px] text-slate-400 mt-0.5 hidden sm:block">Compliance Console</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/guardrail-logo.png" alt="GuardRail" className="h-6 w-auto" />
+              <p className="text-[10px] text-slate-400 mt-1 hidden sm:block">Compliance Console</p>
             </div>
           </div>
           <form action={logoutAction} className="md:hidden shrink-0">

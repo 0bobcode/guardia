@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
+import { SubmitButton } from "@/components/SubmitButton";
 import { signupAction } from "./actions";
 
 const ERRORS: Record<string, string> = {
@@ -21,12 +21,12 @@ export default async function SignupPage({
   return (
     <main className="app-shell flex-1 flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <Link href="/" className="flex items-center gap-2.5 justify-center mb-8">
-          <Logo size={34} />
-          <span className="font-semibold text-app-text tracking-tight">GUARDIA</span>
+        <Link href="/" className="load-in flex justify-center mb-8 transition-transform hover:scale-[1.03]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/guardia-logo.png" alt="Guardia" className="h-9 w-auto" />
         </Link>
 
-        <div className="app-card rounded-xl p-8">
+        <div className="app-card rounded-xl p-8 load-in" style={{ animationDelay: "80ms" }}>
           <h1 className="text-lg font-semibold text-app-text">Create your account</h1>
           <p className="text-sm text-app-muted mt-1">
             Set up TrustEd for your family — free for parents, always.
@@ -104,12 +104,12 @@ export default async function SignupPage({
                 />
               </div>
             </div>
-            <button
-              type="submit"
+            <SubmitButton
+              pendingLabel="Creating account…"
               className="w-full rounded-md bg-app-teal text-[#04211d] text-sm font-semibold py-2.5 hover:opacity-90 active:scale-[0.99] transition-all"
             >
               Create account
-            </button>
+            </SubmitButton>
           </form>
 
           <p className="mt-5 text-center text-sm text-app-muted">
@@ -120,7 +120,7 @@ export default async function SignupPage({
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-app-muted">
+        <p className="mt-6 text-center text-xs text-app-muted load-in" style={{ animationDelay: "160ms" }}>
           <Link href="/" className="hover:text-app-text">
             ← Back to guardia.ai
           </Link>

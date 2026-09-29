@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
 
 export function MarketingFooter() {
   return (
     <footer className="border-t border-white/10 bg-brand-navy">
       <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8">
         <div className="col-span-2 sm:col-span-1">
-          <div className="flex items-center gap-2 mb-3">
-            <Logo size={26} />
-            <span className="font-semibold text-white text-sm">GUARDIA</span>
+          <div className="flex items-center mb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/guardia-logo.png" alt="Guardia" className="h-6 w-auto" />
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">
             Protecting children in the age of AI. A Campus Consortium Foundation initiative.

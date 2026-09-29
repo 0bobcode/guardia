@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Logo } from "@/components/Logo";
 import { SubmitButton } from "@/components/SubmitButton";
 import { microsoftEntraEnabled } from "@/lib/auth";
 import { loginAction, loginWithMicrosoftAction } from "./actions";
@@ -14,12 +13,9 @@ export default async function LoginPage({
   return (
     <main className="app-shell flex-1 flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <Link
-          href="/"
-          className="load-in flex items-center gap-2.5 justify-center mb-8 transition-transform hover:scale-[1.03]"
-        >
-          <Logo size={34} />
-          <span className="font-semibold text-app-text tracking-tight">GUARDIA</span>
+        <Link href="/" className="load-in flex justify-center mb-8 transition-transform hover:scale-[1.03]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/guardia-logo.png" alt="Guardia" className="h-9 w-auto" />
         </Link>
 
         <div className="app-card rounded-xl p-8 load-in" style={{ animationDelay: "80ms" }}>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Logo } from "@/components/Logo";
 
 const NAV = [
   { href: "/products/guardrail", label: "GuardRail" },
@@ -19,9 +18,13 @@ export function MarketingHeader() {
   return (
     <header className="border-b border-white/10 bg-brand-navy/90 backdrop-blur-md sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-6 flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <Logo size={30} className="transition-transform group-hover:scale-105" />
-          <span className="font-semibold text-white tracking-tight">GUARDIA</span>
+        <Link href="/" className="flex items-center shrink-0 group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/guardia-logo.png"
+            alt="Guardia"
+            className="h-7 w-auto transition-transform group-hover:scale-105"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">

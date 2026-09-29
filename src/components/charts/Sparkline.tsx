@@ -49,9 +49,7 @@ export function Sparkline({
       <path d={linePath} fill="none" stroke={color} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
       {points.map((p, i) => (
         <circle key={i} cx={p.x} cy={p.y} r={7} fill="transparent">
-          <title>
-            {p.label}: {formatCompact(p.value)}
-          </title>
+          <title>{`${p.label}: ${formatCompact(p.value)}`}</title>
         </circle>
       ))}
       <circle cx={last.x} cy={last.y} r={4} fill={color} stroke="white" strokeWidth={2} />

@@ -20,7 +20,6 @@ const ACTION_COLOR: Record<string, string> = {
 export function GuardRailPreview() {
   const [visible, setVisible] = useState(false);
   const [flashIndex, setFlashIndex] = useState<number | null>(null);
-  const [count, setCount] = useState(2100412);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,13 +44,7 @@ export function GuardRailPreview() {
       setFlashIndex(Math.floor(Math.random() * ROWS.length));
       setTimeout(() => setFlashIndex(null), 900);
     }, 2600);
-    const tick = setInterval(() => {
-      setCount((c) => c + Math.floor(Math.random() * 14) + 3);
-    }, 1100);
-    return () => {
-      clearInterval(flash);
-      clearInterval(tick);
-    };
+    return () => clearInterval(flash);
   }, [visible]);
 
   return (
@@ -59,10 +52,7 @@ export function GuardRailPreview() {
       <BrowserFrame title="guardia.ai/guardrail">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold text-white">Recent Alerts</span>
-          <span className="flex items-center gap-1.5 text-[10px] text-emerald-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Live
-          </span>
+          <span className="text-[10px] text-slate-500">Example activity</span>
         </div>
         <div className="space-y-1.5">
           {ROWS.map((r, i) => (
@@ -85,9 +75,8 @@ export function GuardRailPreview() {
             </div>
           ))}
         </div>
-        <div className="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-500">
-          <span>Scanned today</span>
-          <span className="font-mono text-slate-300 tabular-nums">{count.toLocaleString("en-US")}</span>
+        <div className="mt-3 pt-3 border-t border-white/10 text-[10px] text-slate-500">
+          Illustrative — see GuardRail score a real message on the right →
         </div>
       </BrowserFrame>
     </div>
