@@ -14,6 +14,13 @@ function pctChange(today: number, yesterday: number) {
   return ((today - yesterday) / yesterday) * 100;
 }
 
+const RISK_BORDER: Record<string, string> = {
+  HIGH: "border-l-red-500/60",
+  MED: "border-l-amber-500/60",
+  LOW: "border-l-sky-500/50",
+  NONE: "border-l-transparent",
+};
+
 export default async function GuardRailDashboard() {
   const session = await requireRole("DISTRICT_ADMIN");
   const districtId = session.user.districtId!;
@@ -34,6 +41,7 @@ export default async function GuardRailDashboard() {
     where: {
       districtId,
       action: "BLOCKED",
+      // eslint-disable-next-line react-hooks/purity -- Server Component, renders fresh per request
       createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
     },
   });
@@ -60,15 +68,20 @@ export default async function GuardRailDashboard() {
   const complianceTrend = statsAsc.map((s) => ({ label: formatDate(s.date), value: s.complianceScore }));
 
   return (
-    <div className="p-8 max-w-6xl">
-      <div className="flex items-center justify-between mb-1 load-in">
+    <div className="relative p-8 max-w-6xl">
+      <div
+        aria-hidden="true"
+        className="absolute -top-8 left-0 right-0 h-40 pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(480px 200px at 15% 0%, rgba(45, 212, 191, 0.08), transparent)" }}
+      />
+      <div className="relative flex items-center justify-between mb-1 load-in">
         <h1 className="text-xl font-semibold text-app-text">{district?.name}</h1>
         <div className="flex items-center gap-2 text-xs text-app-muted">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
           Live · {formatLongDate(new Date())}
         </div>
       </div>
-      <p className="text-sm text-app-muted mb-8 load-in">Compliance Monitoring</p>
+      <p className="relative text-sm text-app-muted mb-8 load-in">Compliance Monitoring</p>
 
       <div className="mb-8">
         <AskGuardia
@@ -174,7 +187,7 @@ export default async function GuardRailDashboard() {
               {recentAlerts.map((a, i) => (
                 <tr
                   key={a.id}
-                  className="border-b border-app-border last:border-0 hover:bg-white/5 transition-colors load-in"
+                  className={`border-b border-l-2 ${RISK_BORDER[a.riskLevel] ?? "border-l-transparent"} border-app-border last:border-b-0 hover:bg-white/5 transition-colors load-in`}
                   style={{ animationDelay: `${280 + i * 40}ms` }}
                 >
                   <td className="px-5 py-3 text-app-muted font-mono text-xs">

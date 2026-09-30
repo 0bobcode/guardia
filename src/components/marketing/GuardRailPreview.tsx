@@ -42,8 +42,8 @@ export function GuardRailPreview() {
     if (!visible) return;
     const flash = setInterval(() => {
       setFlashIndex(Math.floor(Math.random() * ROWS.length));
-      setTimeout(() => setFlashIndex(null), 900);
-    }, 2600);
+      setTimeout(() => setFlashIndex(null), 550);
+    }, 1400);
     return () => clearInterval(flash);
   }, [visible]);
 

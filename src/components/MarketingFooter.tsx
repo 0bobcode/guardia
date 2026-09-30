@@ -1,9 +1,19 @@
 import Link from "next/link";
+import { Particles } from "@/components/marketing/Particles";
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-white/10 bg-brand-navy">
-      <div className="mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8">
+    <footer className="relative border-t border-white/10 bg-brand-navy overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(560px 320px at 15% 0%, rgba(45, 212, 191, 0.07), transparent)",
+        }}
+      />
+      <Particles count={4} />
+      <div className="relative mx-auto max-w-6xl px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8">
         <div className="col-span-2 sm:col-span-1">
           <div className="flex items-center mb-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}

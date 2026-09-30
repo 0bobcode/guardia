@@ -48,11 +48,16 @@ export default async function TrustedDashboard() {
   });
 
   return (
-    <div className="px-6 py-8">
-      <h1 className="text-xl font-semibold text-app-text load-in">
+    <div className="relative px-6 py-8">
+      <div
+        aria-hidden="true"
+        className="absolute -top-8 left-0 right-0 h-40 pointer-events-none"
+        style={{ backgroundImage: "radial-gradient(480px 200px at 15% 0%, rgba(45, 212, 191, 0.08), transparent)" }}
+      />
+      <h1 className="relative text-xl font-semibold text-app-text load-in">
         {greeting()}, {session!.user.name.split(" ")[0]} 👋
       </h1>
-      <p className="text-sm text-app-muted mt-1 mb-8 load-in">
+      <p className="relative text-sm text-app-muted mt-1 mb-8 load-in">
         {students.length === 1
           ? `${students[0].name}'s ${students[0].enrollments.length} school apps are monitored · Live`
           : `Watching over ${students.length} students · Live`}
@@ -145,7 +150,7 @@ export default async function TrustedDashboard() {
                 return (
                   <div
                     key={e.id}
-                    className="app-card rounded-xl p-4 flex items-center justify-between transition-all hover:border-app-border-strong hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 load-in"
+                    className={`app-card rounded-xl p-4 flex items-center justify-between transition-all hover:border-app-border-strong hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 load-in border-l-2 ${hasFlag ? "border-l-amber-500/60" : "border-l-emerald-500/40"}`}
                     style={{ animationDelay: `${240 + i * 50}ms` }}
                   >
                     <div>

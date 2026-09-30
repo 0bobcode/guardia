@@ -262,8 +262,8 @@ body {
     0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
     50% { transform: translate(-3%, 2.5%) scale(1.05); opacity: 1; }
   }
-  .orb-a { animation: orb-drift-a 16s ease-in-out infinite; }
-  .orb-b { animation: orb-drift-b 20s ease-in-out infinite; }
+  .orb-a { animation: orb-drift-a 8s ease-in-out infinite; }
+  .orb-b { animation: orb-drift-b 10s ease-in-out infinite; }
 
   /* Shifting gradient headline text, like Rolli's colored hero copy. */
   @keyframes gradient-shift {
@@ -272,7 +272,7 @@ body {
   }
   .gradient-text {
     background-size: 200% auto;
-    animation: gradient-shift 6s ease-in-out infinite;
+    animation: gradient-shift 3.5s ease-in-out infinite;
   }
 }
 .gradient-text {
@@ -300,6 +300,33 @@ body {
 }
 .stagger-in {
   animation: stagger-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* A corner toast popping in/out — like Rolli's scene-transition callouts
+   on its product tour. */
+@keyframes toast-in {
+  0% { opacity: 0; transform: translateY(-6px) scale(0.96); }
+  12% { opacity: 1; transform: translateY(0) scale(1); }
+  88% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-6px) scale(0.96); }
+}
+.toast-in {
+  animation: toast-in 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Small ambient dots drifting upward — cheap continuous motion for
+   otherwise-static dark sections, like Rolli's background particles. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes particle-float {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    12% { opacity: 0.55; }
+    85% { opacity: 0.35; }
+    100% { transform: translateY(-320px) scale(1); opacity: 0; }
+  }
+  .particle-dot {
+    animation: particle-float var(--pd, 9s) linear infinite;
+    animation-delay: var(--pt, 0s);
+  }
 }
 
 .dark-scroll {

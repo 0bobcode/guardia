@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { TrustEdPreview } from "@/components/marketing/TrustEdPreview";
+import { Particles } from "@/components/marketing/Particles";
 
 export const metadata: Metadata = {
   title: "TrustEd — Guardia",
@@ -93,6 +95,25 @@ export default function TrustedPage() {
             requests, usage summaries, and safety alerts automatically — with zero setup on their
             end.
           </p>
+        </div>
+      </section>
+
+      <section className="relative bg-brand-navy overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-70"
+          style={{
+            backgroundImage: "radial-gradient(600px 460px at 85% 10%, rgba(129, 140, 248, 0.1), transparent)",
+          }}
+        />
+        <Particles count={7} />
+        <div className="relative mx-auto max-w-4xl px-6 py-16">
+          <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">The parent view</p>
+          <h2 className="text-2xl font-bold text-white mb-2">What a parent actually sees.</h2>
+          <p className="text-sm text-slate-400 mb-8 max-w-xl">
+            Every flagged moment, across every AI app their child uses at school, in one feed.
+          </p>
+          <TrustEdPreview />
         </div>
       </section>
 

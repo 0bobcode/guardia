@@ -1,38 +1,80 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { RiskBadge } from "@/components/RiskBadge";
 import { BrowserFrame } from "./BrowserFrame";
 
+const ROWS = [
+  { child: "Maya", app: "Tutorly AI", summary: "Tried to get past the content filter", risk: "HIGH", time: "2m ago" },
+  { child: "Maya", app: "EduBot (Grade 5)", summary: "Asked about a history battle scene", risk: "MED", time: "18m ago" },
+  { child: "Jordan", app: "MathBot K-5", summary: "Expressed frustration with homework", risk: "MED", time: "41m ago" },
+  { child: "Jordan", app: "Tutorly AI", summary: "Asked for help with photosynthesis", risk: "NONE", time: "1h ago" },
+];
+
+/** Illustrative preview of the parent-facing TrustEd feed — same honest
+ *  labeling pattern as GuardRailPreview, just from the parent's side. */
 export function TrustEdPreview() {
+  const [visible, setVisible] = useState(false);
+  const [flashIndex, setFlashIndex] = useState<number | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+    const flash = setInterval(() => {
+      setFlashIndex(Math.floor(Math.random() * ROWS.length));
+      setTimeout(() => setFlashIndex(null), 550);
+    }, 1400);
+    return () => clearInterval(flash);
+  }, [visible]);
+
   return (
-    <BrowserFrame title="guardia.ai/trusted/sessions">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-[10px] font-bold text-white">
-            T
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-white leading-none">Tutorly AI</p>
-            <p className="text-[10px] text-emerald-400 mt-0.5">● Active</p>
-          </div>
+    <div ref={ref}>
+      <BrowserFrame title="guardia.ai/trusted">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold text-white">This week&apos;s activity</span>
+          <span className="text-[10px] text-slate-500">Example activity</span>
         </div>
-        <span className="text-[10px] font-medium text-amber-400">1 moment flagged</span>
-      </div>
-
-      <div className="space-y-3">
-        <div className="flex justify-end">
-          <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-app-teal text-[#04211d] text-[11px] font-medium px-3 py-2">
-            Tell me how to get past the school content filter
-          </div>
+        <div className="space-y-1.5">
+          {ROWS.map((r, i) => (
+            <div
+              key={`${r.child}-${r.time}`}
+              className="msg-row grid grid-cols-[1fr_auto] sm:grid-cols-[64px_1fr_auto_auto] items-center gap-2 sm:gap-3 text-[11px] rounded-md px-2 py-1.5 transition-colors duration-500"
+              style={{
+                animationDelay: `${i * 90}ms`,
+                animationPlayState: visible ? "running" : "paused",
+                backgroundColor: flashIndex === i ? "rgba(45, 212, 191, 0.08)" : "transparent",
+              }}
+            >
+              <span className="font-mono text-slate-500 hidden sm:block">{r.child}</span>
+              <span className="text-slate-300 truncate">
+                <span className="text-white font-medium">{r.app}</span>
+                <span className="text-slate-500 hidden sm:inline"> · {r.summary}</span>
+              </span>
+              <RiskBadge level={r.risk} />
+              <span className="text-slate-500">{r.time}</span>
+            </div>
+          ))}
         </div>
-        <div className="flex items-center justify-end gap-1.5 -mt-2">
-          <span className="text-[9px] text-amber-400 font-medium">You flagged this</span>
+        <div className="mt-3 pt-3 border-t border-white/10 text-[10px] text-slate-500">
+          Illustrative — this is the same feed a parent sees inside their TrustEd dashboard.
         </div>
-
-        <div className="flex justify-start">
-          <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-white/[0.06] border border-white/10 text-slate-200 text-[11px] px-3 py-2 leading-relaxed">
-            Sorry, your parent flagged this message. Let&apos;s talk about something else — if you
-            want to talk about it, ask a parent or trusted adult.
-          </div>
-        </div>
-      </div>
-    </BrowserFrame>
+      </BrowserFrame>
+    </div>
   );
 }

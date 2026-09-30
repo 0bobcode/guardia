@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { InteractiveScanDemo } from "@/components/marketing/InteractiveScanDemo";
+import { Particles } from "@/components/marketing/Particles";
 
 export const metadata: Metadata = {
   title: "GuardRail — Guardia",
@@ -92,6 +94,26 @@ export default function GuardRailPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative bg-brand-navy overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-70"
+          style={{
+            backgroundImage: "radial-gradient(600px 460px at 15% 10%, rgba(45, 212, 191, 0.1), transparent)",
+          }}
+        />
+        <Particles count={7} />
+        <div className="relative mx-auto max-w-4xl px-6 py-16">
+          <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">Try it yourself</p>
+          <h2 className="text-2xl font-bold text-white mb-2">See GuardRail catch something, live.</h2>
+          <p className="text-sm text-slate-400 mb-8 max-w-xl">
+            This box runs GuardRail&apos;s actual default detection rules, client-side. Nothing typed
+            here is sent anywhere.
+          </p>
+          <InteractiveScanDemo />
         </div>
       </section>
 
