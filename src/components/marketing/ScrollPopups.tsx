@@ -14,11 +14,6 @@ type Popup = {
 // message is a true statement about the product — no invented activity,
 // counts, or "someone just signed up" social proof.
 const POPUPS: Record<string, Popup> = {
-  demo: {
-    icon: "\u{1F446}",
-    title: "Try it with your own words",
-    body: "Click the box and type a message. It runs GuardRail's real default rules, right in your browser.",
-  },
   ask: {
     icon: "\u{1F4AC}",
     title: "Ask in plain English",

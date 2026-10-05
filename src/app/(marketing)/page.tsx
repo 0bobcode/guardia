@@ -152,13 +152,22 @@ export default function Home() {
       <ScrollPopups />
 
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-6 pt-28 pb-20 relative">
+        <div
+          aria-hidden="true"
+          className="glow-breathe pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(720px 560px at 76% 42%, rgba(45, 212, 191, 0.34), transparent), radial-gradient(560px 460px at 96% 12%, rgba(99, 102, 241, 0.34), transparent), radial-gradient(520px 420px at 4% 78%, rgba(45, 212, 191, 0.18), transparent)",
+          }}
+        />
+        <div className="mx-auto max-w-6xl px-6 pt-16 sm:pt-24 pb-20 sm:pb-28 relative grid lg:grid-cols-[1fr_1.08fr] gap-12 xl:gap-16 items-center">
+          <div>
           <div className="load-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200 mb-7">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-teal animate-pulse" />
             Real-time scanning for Gemini, ChatGPT &amp; Claude
           </div>
           <h1
-            className="load-in text-5xl sm:text-6xl font-bold tracking-tight max-w-3xl leading-[1.05]"
+            className="load-in text-5xl sm:text-6xl lg:text-[3.35rem] xl:text-[3.6rem] font-bold tracking-tight max-w-2xl leading-[1.05]"
             style={{ animationDelay: "70ms" }}
           >
             The safety layer between kids and <span className="gradient-text">AI</span>.
@@ -182,50 +191,43 @@ export default function Home() {
             </Link>
             <Link
               href="#demo"
-              className="px-5 py-3 rounded-md border border-brand-teal/40 text-brand-teal font-semibold hover:bg-brand-teal/10 hover:border-brand-teal/60 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+              className="px-5 py-3 rounded-md border border-brand-teal/50 bg-brand-navy/60 text-brand-teal font-semibold backdrop-blur-sm hover:bg-brand-teal/10 hover:border-brand-teal/60 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
-              Try the interactive demo ↓
+              See it scan live ↓
             </Link>
             <Link
               href="/products/guardrail"
-              className="px-5 py-3 rounded-md border border-white/20 text-white font-semibold hover:bg-white/5 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+              className="px-5 py-3 rounded-md border border-white/20 bg-brand-navy/40 text-white font-semibold backdrop-blur-sm hover:bg-white/5 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               Explore the products
             </Link>
           </div>
-        </div>
+          </div>
 
-        <div
-          id="demo" data-popup="demo"
-          className="load-in mx-auto max-w-6xl px-6 pb-28 relative grid md:grid-cols-2 gap-5 scroll-mt-24"
-          style={{ animationDelay: "280ms" }}
-        >
-          <GuardRailPreview />
-          <InteractiveScanDemo />
+          <div id="demo" className="load-in space-y-4 scroll-mt-24" style={{ animationDelay: "280ms" }}>
+            <div className="rounded-xl shadow-[0_0_90px_-8px_rgba(45,212,191,0.45)]">
+              <InteractiveScanDemo />
+            </div>
+            <GuardRailPreview />
+          </div>
         </div>
       </section>
 
       <section className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
         <Particles count={5} />
-        <div className="relative mx-auto max-w-6xl px-6 pt-10 pb-6 grid sm:grid-cols-3 gap-6 text-center sm:text-left">
-          <Reveal>
-            <p className="text-2xl font-bold text-white tabular-nums">
-              <CountUp end={56} suffix="M+" />
-            </p>
-            <p className="text-xs text-slate-400 mt-1">K-12 students in the US¹</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <p className="text-2xl font-bold text-white tabular-nums">
-              <CountUp end={15} suffix="+" />
-            </p>
-            <p className="text-xs text-slate-400 mt-1">States actively legislating AI/child online safety²</p>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="text-2xl font-bold text-white tabular-nums">
-              <CountUp end={4} prefix="<" suffix="h" />
-            </p>
-            <p className="text-xs text-slate-400 mt-1">Design target for GuardRail integration³</p>
-          </Reveal>
+        <div className="relative mx-auto max-w-6xl px-6 pt-12 pb-6 grid sm:grid-cols-3 gap-4">
+          {[
+            { node: <CountUp end={56} suffix="M+" />, label: "K-12 students in the US\u00B9", delay: 0 },
+            { node: <CountUp end={15} suffix="+" />, label: "States actively legislating AI/child online safety\u00B2", delay: 80 },
+            { node: <CountUp end={4} prefix="<" suffix="h" />, label: "Design target for GuardRail integration\u00B3", delay: 160 },
+          ].map((st) => (
+            <Reveal key={st.label} delay={st.delay}>
+              <div className="h-full rounded-xl border border-white/10 bg-white/[0.04] px-6 py-5 transition-all hover:-translate-y-0.5 hover:border-brand-teal/30 hover:bg-white/[0.06]">
+                <p className="text-3xl font-bold text-white tabular-nums">{st.node}</p>
+                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">{st.label}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
         <p className="mx-auto max-w-6xl px-6 pb-6 text-[11px] text-slate-500 leading-relaxed">
           ¹ National Center for Education Statistics, public + private K-12 enrollment. &nbsp; ² Based on
@@ -262,7 +264,7 @@ export default function Home() {
           className="absolute inset-0 opacity-60"
           style={{
             backgroundImage:
-              "radial-gradient(500px 400px at 85% 20%, rgba(45, 212, 191, 0.08), transparent)",
+              "radial-gradient(680px 520px at 85% 20%, rgba(45, 212, 191, 0.22), transparent)",
           }}
         />
         <Particles count={8} />
@@ -302,7 +304,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(600px 460px at 90% 15%, rgba(99, 102, 241, 0.09), transparent)",
+              "radial-gradient(760px 580px at 90% 15%, rgba(99, 102, 241, 0.24), transparent)",
           }}
         />
         <Particles count={6} />
@@ -368,7 +370,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(560px 420px at 10% 80%, rgba(129, 140, 248, 0.08), transparent)",
+              "radial-gradient(700px 520px at 10% 80%, rgba(129, 140, 248, 0.22), transparent)",
           }}
         />
         <Particles count={5} />
@@ -450,7 +452,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(480px 380px at 50% 30%, rgba(45, 212, 191, 0.10), transparent)",
+              "radial-gradient(640px 480px at 50% 30%, rgba(45, 212, 191, 0.24), transparent)",
           }}
         />
         <Particles count={7} />
@@ -475,7 +477,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(700px 500px at 20% 10%, rgba(45, 212, 191, 0.10), transparent), radial-gradient(600px 480px at 85% 90%, rgba(99, 102, 241, 0.10), transparent)",
+              "radial-gradient(860px 620px at 20% 10%, rgba(45, 212, 191, 0.26), transparent), radial-gradient(780px 600px at 85% 90%, rgba(99, 102, 241, 0.26), transparent)",
           }}
         />
         <Particles count={8} />

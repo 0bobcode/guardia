@@ -36,6 +36,14 @@ const SCENES: Scene[] = [
   },
 ];
 
+// The same example prompts the real Ask Guardia box suggests in the dashboards.
+const SUGGESTED = [
+  "Any spikes in policy violations this week?",
+  "Which category is flagged most right now?",
+  "How are we trending vs last week?",
+  "Any concerning topics recently?",
+];
+
 const TYPE_MS = 34;
 const badgeClass: Record<Highlight["severity"], string> = {
   HIGH: "risk-badge risk-HIGH",
@@ -126,6 +134,19 @@ export function AskGuardiaDemo() {
       </div>
 
       <div ref={scrollRef} className="dark-scroll h-[230px] overflow-y-auto pr-1">
+        {phase === "typing" && (
+          <div className="py-1">
+            <p className="text-[10px] uppercase tracking-wide text-slate-500 mb-2">Suggested questions</p>
+            <div className="space-y-1.5">
+              {SUGGESTED.map((q) => (
+                <div key={q} className="text-[11px] text-slate-300 border border-white/10 rounded-md px-2.5 py-1.5">
+                  {q}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {phase === "thinking" && (
           <div className="space-y-1.5 py-1">
             {THINK_STEPS.map((s, idx) => (

@@ -8,7 +8,7 @@ export function Particles({ count = 8 }: { count?: number }) {
     const left = ((i * 37 + 11) % 100).toFixed(1);
     const duration = 2.8 + ((i * 3) % 4);
     const delay = (i * 0.7) % 5;
-    const size = 2 + (i % 3);
+    const size = 3 + (i % 4);
     const color = COLORS[i % COLORS.length];
     return { left, duration, delay, size, color, key: i };
   });
@@ -25,7 +25,7 @@ export function Particles({ count = 8 }: { count?: number }) {
             width: d.size,
             height: d.size,
             background: d.color,
-            boxShadow: `0 0 6px ${d.color}`,
+            boxShadow: `0 0 14px 2px ${d.color}`,
             ["--pd" as string]: `${d.duration}s`,
             ["--pt" as string]: `${d.delay}s`,
           }}
