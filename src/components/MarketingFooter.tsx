@@ -48,7 +48,7 @@ export function MarketingFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-6xl px-6 py-5 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-2">
+        <div className="mx-auto max-w-6xl px-6 py-5 max-[1320px]:pr-24 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-2">
           <span>© 2026 Guardia · A Campus Consortium Foundation initiative</span>
           <span>Demo environment</span>
         </div>
