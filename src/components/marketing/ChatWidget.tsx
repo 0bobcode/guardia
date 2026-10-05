@@ -48,6 +48,12 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
+    const openFromElsewhere = () => setOpen(true);
+    window.addEventListener("guardia:open-chat", openFromElsewhere);
+    return () => window.removeEventListener("guardia:open-chat", openFromElsewhere);
+  }, []);
+
+  useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 

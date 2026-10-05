@@ -314,6 +314,12 @@ body {
   animation: toast-in 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Countdown bar along the bottom of a scroll pop-up. */
+@keyframes popup-timer {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
 /* Small ambient dots drifting upward — cheap continuous motion for
    otherwise-static dark sections, like Rolli's background particles. */
 @media (prefers-reduced-motion: no-preference) {

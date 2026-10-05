@@ -11,6 +11,7 @@ import { AskGuardiaDemo } from "@/components/marketing/AskGuardiaDemo";
 import { Faq } from "@/components/marketing/Faq";
 import { IconAlert, IconPolicies, IconReports, IconChat, IconCheck, IconClock } from "@/components/icons";
 import { CATEGORY_DEFS } from "@/lib/scanEngine";
+import { ScrollPopups } from "@/components/marketing/ScrollPopups";
 
 const FEATURES = [
   {
@@ -148,6 +149,7 @@ export default function Home() {
   return (
     <div className="relative text-white">
       <AnimatedWaves />
+      <ScrollPopups />
 
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-6 pt-28 pb-20 relative">
@@ -194,7 +196,7 @@ export default function Home() {
         </div>
 
         <div
-          id="demo"
+          id="demo" data-popup="demo"
           className="load-in mx-auto max-w-6xl px-6 pb-28 relative grid md:grid-cols-2 gap-5 scroll-mt-24"
           style={{ animationDelay: "280ms" }}
         >
@@ -232,7 +234,7 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="relative mx-auto max-w-6xl px-6 py-20">
+      <section data-popup="ask" className="relative mx-auto max-w-6xl px-6 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <Reveal>
             <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">
@@ -254,7 +256,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative border-t border-white/10 overflow-hidden">
+      <section data-popup="how" className="relative border-t border-white/10 overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-60"
@@ -294,7 +296,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
+      <section data-popup="score" className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -336,7 +338,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-6xl px-6 py-20">
+      <section data-popup="features" className="relative mx-auto max-w-6xl px-6 py-20">
         <Reveal className="max-w-xl mb-12">
           <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">
             GuardRail + TrustEd
@@ -360,7 +362,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-6xl px-6 py-20 overflow-hidden">
+      <section data-popup="audiences" className="relative mx-auto max-w-6xl px-6 py-20 overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -402,7 +404,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
+      <section data-popup="security" className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
         <Particles count={4} />
         <div className="relative mx-auto max-w-6xl px-6 py-14">
           <Reveal className="max-w-xl mb-8">
@@ -432,7 +434,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative mx-auto max-w-3xl px-6 py-20">
+      <section data-popup="faq" className="relative mx-auto max-w-3xl px-6 py-20">
         <Reveal className="max-w-xl mb-10">
           <p className="text-xs font-semibold tracking-wide text-brand-teal uppercase mb-3">Questions</p>
           <h2 className="text-3xl font-bold text-white tracking-tight">Before you ask, a few answers.</h2>
@@ -467,7 +469,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <section className="relative overflow-hidden">
+      <section data-popup="cta" className="relative overflow-hidden">
         <div
           aria-hidden="true"
           className="absolute inset-0"
