@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { TrustedNav } from "@/components/TrustedNav";
 import { Avatar } from "@/components/Avatar";
+import { UrgentAlertPopup } from "@/components/UrgentAlertPopup";
 import { logoutAction } from "../logout-action";
 
 export default async function TrustedLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +48,7 @@ export default async function TrustedLayout({ children }: { children: React.Reac
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-0">{children}</main>
+      <UrgentAlertPopup href="/trusted/sessions" linkLabel="Review sessions" />
     </div>
   );
 }

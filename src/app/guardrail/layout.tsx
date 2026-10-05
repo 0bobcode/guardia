@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { GuardRailNav } from "@/components/GuardRailNav";
+import { UrgentAlertPopup } from "@/components/UrgentAlertPopup";
 import { logoutAction } from "../logout-action";
 
 export default async function GuardRailLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +41,7 @@ export default async function GuardRailLayout({ children }: { children: React.Re
         </div>
       </aside>
       <div className="flex-1 min-w-0">{children}</div>
+      <UrgentAlertPopup href="/guardrail/alerts" linkLabel="View alerts" />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { loginAction, loginWithMicrosoftAction } from "./actions";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; email?: string }>;
+  searchParams: Promise<{ error?: string; email?: string; reset?: string }>;
 }) {
   const params = await searchParams;
 
@@ -22,6 +22,11 @@ export default async function LoginPage({
           <h1 className="text-lg font-semibold text-app-text">Welcome back</h1>
           <p className="text-sm text-app-muted mt-1">Sign in to your GuardRail or TrustEd dashboard.</p>
 
+          {params.reset && (
+            <div className="mt-4 text-sm text-app-text bg-app-teal-soft border border-app-teal/30 rounded-md px-3 py-2">
+              Password updated. Sign in with your new password.
+            </div>
+          )}
           {params.error && (
             <div className="mt-4 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2">
               Invalid email or password.
@@ -71,7 +76,12 @@ export default async function LoginPage({
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-app-muted mb-1">Password</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-medium text-app-muted">Password</label>
+                <Link href="/forgot-password" className="text-xs text-app-teal hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-app-faint" width="15" height="15" viewBox="0 0 16 16" fill="none">
                   <rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
