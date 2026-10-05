@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sent?: string; error?: string }>;
+  searchParams: Promise<{ sent?: string; error?: string; ref?: string }>;
 }) {
   const params = await searchParams;
 
@@ -48,6 +48,7 @@ export default async function ContactPage({
           </div>
         ) : (
           <form action={submitContactAction} className="bg-white border border-brand-border rounded-xl p-6 space-y-4">
+            {params.ref === "orb" && <input type="hidden" name="ref" value="orb" />}
             {params.error && (
               <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-md px-3 py-2">
                 Please fill in your name, email, and message.
@@ -101,6 +102,7 @@ export default async function ContactPage({
                 name="message"
                 required
                 rows={5}
+                defaultValue={params.ref === "orb" ? "I found the orb. " : undefined}
                 className="w-full rounded-md border border-brand-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
               />
             </div>

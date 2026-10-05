@@ -7,7 +7,8 @@ export async function submitContactAction(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const organization = String(formData.get("organization") ?? "").trim();
-  const interest = String(formData.get("interest") ?? "General inquiry");
+  const fromOrb = formData.get("ref") === "orb";
+  const interest = fromOrb ? "Orb claim" : String(formData.get("interest") ?? "General inquiry");
   const message = String(formData.get("message") ?? "").trim();
 
   if (!name || !email || !message) {

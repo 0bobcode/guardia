@@ -12,6 +12,7 @@ import { Faq } from "@/components/marketing/Faq";
 import { IconAlert, IconPolicies, IconReports, IconChat, IconCheck, IconClock } from "@/components/icons";
 import { CATEGORY_DEFS } from "@/lib/scanEngine";
 import { ScrollPopups } from "@/components/marketing/ScrollPopups";
+import { PromoOrb, OrbReward } from "@/components/marketing/PromoOrb";
 
 const FEATURES = [
   {
@@ -150,8 +151,10 @@ export default function Home() {
     <div className="relative text-white">
       <AnimatedWaves />
       <ScrollPopups />
+      <OrbReward />
 
       <section className="relative overflow-hidden">
+        <PromoOrb className="right-6 top-20 lg:left-[47%] lg:right-auto lg:top-24" size={38} />
         <div
           aria-hidden="true"
           className="glow-breathe pointer-events-none absolute inset-0"
@@ -407,6 +410,7 @@ export default function Home() {
       </section>
 
       <section data-popup="security" className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
+        <PromoOrb className="bottom-5 right-6" size={30} />
         <Particles count={4} />
         <div className="relative mx-auto max-w-6xl px-6 py-14">
           <Reveal className="max-w-xl mb-8">
@@ -472,6 +476,7 @@ export default function Home() {
       </section>
 
       <section data-popup="cta" className="relative overflow-hidden">
+        <PromoOrb className="left-[9%] top-[26%]" size={34} />
         <div
           aria-hidden="true"
           className="absolute inset-0"
