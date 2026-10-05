@@ -48,7 +48,7 @@ export function UrgentAlertPopup({ href, linkLabel }: { href: string; linkLabel:
   if (alerts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-[70] flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2" role="alert" aria-live="assertive">
+    <div className="fixed bottom-4 right-4 z-[70] flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2" role="alert" aria-live="assertive">
       {alerts.map((a) => (
         <div
           key={a.id}
