@@ -7,8 +7,6 @@ export default async function SalesDashboardPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const requests = await prisma.contactRequest.findMany({ orderBy: { createdAt: "desc" }, take: 25 });
-
   const now = new Date();
   const thisMonth = districts.filter(
     (d) => d.createdAt.getFullYear() === now.getFullYear() && d.createdAt.getMonth() === now.getMonth()
@@ -44,36 +42,6 @@ export default async function SalesDashboardPage() {
             </div>
           ))}
           {districts.length === 0 && <p className="text-xs text-slate-500">No signed districts yet.</p>}
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
-        <h2 className="text-sm font-semibold mb-1">Contact requests</h2>
-        <p className="text-xs text-slate-500 mb-4">
-          From the site&apos;s contact form, newest first. &ldquo;Orb claim&rdquo; marks people who clicked a landing-page orb.
-        </p>
-        <div className="space-y-3">
-          {requests.map((r) => (
-            <div key={r.id} className="border-b border-white/5 pb-3 last:border-0 last:pb-0">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                <span className="text-white font-medium">{r.name}</span>
-                <span className="text-slate-400">{r.email}</span>
-                {r.organization && <span className="text-slate-500">{r.organization}</span>}
-                <span
-                  className={
-                    r.interest === "Orb claim"
-                      ? "rounded-full bg-brand-teal/20 px-2 py-0.5 font-semibold text-brand-teal"
-                      : "rounded-full bg-white/10 px-2 py-0.5 text-slate-300"
-                  }
-                >
-                  {r.interest}
-                </span>
-                <span className="ml-auto text-slate-500">{r.createdAt.toISOString().slice(0, 16).replace("T", " ")}</span>
-              </div>
-              <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">{r.message}</p>
-            </div>
-          ))}
-          {requests.length === 0 && <p className="text-xs text-slate-500">No contact requests yet.</p>}
         </div>
       </div>
 

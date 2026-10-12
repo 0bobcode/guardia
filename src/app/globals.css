@@ -286,8 +286,8 @@ body {
 /* Soft continuous glow used behind "alive" demo panels. */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes glow-breathe {
-    0%, 100% { opacity: 0.65; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.7; }
   }
   .glow-breathe {
     animation: glow-breathe 4s ease-in-out infinite;
@@ -314,27 +314,6 @@ body {
   animation: toast-in 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Small glowing orbs that float in the page and can be clicked. */
-.promo-orb {
-  cursor: pointer;
-  background: radial-gradient(circle at 32% 28%, #ffffff 0%, #5eead4 22%, #2dd4bf 48%, #6366f1 100%);
-  box-shadow: 0 0 22px 4px rgba(45, 212, 191, 0.65), 0 0 60px 10px rgba(99, 102, 241, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.promo-orb:hover {
-  transform: scale(1.18);
-  box-shadow: 0 0 30px 8px rgba(45, 212, 191, 0.85), 0 0 80px 16px rgba(99, 102, 241, 0.55);
-}
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes orb-float {
-    0%, 100% { translate: 0 0; }
-    25% { translate: 10px -14px; }
-    50% { translate: -6px -22px; }
-    75% { translate: -12px -8px; }
-  }
-  .promo-orb { animation: orb-float 7s ease-in-out infinite; }
-}
-
 /* Countdown bar along the bottom of a scroll pop-up. */
 @keyframes popup-timer {
   from { transform: scaleX(1); }
@@ -346,8 +325,8 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   @keyframes particle-float {
     0% { transform: translateY(0) scale(0.6); opacity: 0; }
-    12% { opacity: 1; }
-    85% { opacity: 0.7; }
+    12% { opacity: 0.55; }
+    85% { opacity: 0.35; }
     100% { transform: translateY(-320px) scale(1); opacity: 0; }
   }
   .particle-dot {

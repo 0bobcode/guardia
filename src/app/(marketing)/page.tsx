@@ -12,7 +12,6 @@ import { Faq } from "@/components/marketing/Faq";
 import { IconAlert, IconPolicies, IconReports, IconChat, IconCheck, IconClock } from "@/components/icons";
 import { CATEGORY_DEFS } from "@/lib/scanEngine";
 import { ScrollPopups } from "@/components/marketing/ScrollPopups";
-import { PromoOrb, OrbReward } from "@/components/marketing/PromoOrb";
 
 const FEATURES = [
   {
@@ -151,18 +150,8 @@ export default function Home() {
     <div className="relative text-white">
       <AnimatedWaves />
       <ScrollPopups />
-      <OrbReward />
 
       <section className="relative overflow-hidden">
-        <PromoOrb className="right-6 top-20 lg:left-[47%] lg:right-auto lg:top-24" size={38} />
-        <div
-          aria-hidden="true"
-          className="glow-breathe pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(720px 560px at 76% 42%, rgba(45, 212, 191, 0.34), transparent), radial-gradient(560px 460px at 96% 12%, rgba(99, 102, 241, 0.34), transparent), radial-gradient(520px 420px at 4% 78%, rgba(45, 212, 191, 0.18), transparent)",
-          }}
-        />
         <div className="mx-auto max-w-6xl px-6 pt-16 sm:pt-24 pb-20 sm:pb-28 relative grid lg:grid-cols-[1fr_1.08fr] gap-12 xl:gap-16 items-center">
           <div>
           <div className="load-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200 mb-7">
@@ -194,13 +183,13 @@ export default function Home() {
             </Link>
             <Link
               href="#demo"
-              className="px-5 py-3 rounded-md border border-brand-teal/50 bg-brand-navy/60 text-brand-teal font-semibold backdrop-blur-sm hover:bg-brand-teal/10 hover:border-brand-teal/60 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+              className="px-5 py-3 rounded-md border border-brand-teal/40 text-brand-teal font-semibold hover:bg-brand-teal/10 hover:border-brand-teal/60 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               See it scan live ↓
             </Link>
             <Link
               href="/products/guardrail"
-              className="px-5 py-3 rounded-md border border-white/20 bg-brand-navy/40 text-white font-semibold backdrop-blur-sm hover:bg-white/5 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 transition-all"
+              className="px-5 py-3 rounded-md border border-white/20 text-white font-semibold hover:bg-white/5 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 transition-all"
             >
               Explore the products
             </Link>
@@ -208,9 +197,7 @@ export default function Home() {
           </div>
 
           <div id="demo" className="load-in space-y-4 scroll-mt-24" style={{ animationDelay: "280ms" }}>
-            <div className="rounded-xl shadow-[0_0_90px_-8px_rgba(45,212,191,0.45)]">
-              <InteractiveScanDemo />
-            </div>
+            <InteractiveScanDemo />
             <GuardRailPreview />
           </div>
         </div>
@@ -267,7 +254,7 @@ export default function Home() {
           className="absolute inset-0 opacity-60"
           style={{
             backgroundImage:
-              "radial-gradient(680px 520px at 85% 20%, rgba(45, 212, 191, 0.22), transparent)",
+              "radial-gradient(500px 400px at 85% 20%, rgba(45, 212, 191, 0.08), transparent)",
           }}
         />
         <Particles count={8} />
@@ -307,7 +294,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(760px 580px at 90% 15%, rgba(99, 102, 241, 0.24), transparent)",
+              "radial-gradient(600px 460px at 90% 15%, rgba(99, 102, 241, 0.09), transparent)",
           }}
         />
         <Particles count={6} />
@@ -373,7 +360,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(700px 520px at 10% 80%, rgba(129, 140, 248, 0.22), transparent)",
+              "radial-gradient(560px 420px at 10% 80%, rgba(129, 140, 248, 0.08), transparent)",
           }}
         />
         <Particles count={5} />
@@ -410,7 +397,6 @@ export default function Home() {
       </section>
 
       <section data-popup="security" className="relative border-y border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
-        <PromoOrb className="bottom-5 right-6" size={30} />
         <Particles count={4} />
         <div className="relative mx-auto max-w-6xl px-6 py-14">
           <Reveal className="max-w-xl mb-8">
@@ -456,7 +442,7 @@ export default function Home() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(640px 480px at 50% 30%, rgba(45, 212, 191, 0.24), transparent)",
+              "radial-gradient(480px 380px at 50% 30%, rgba(45, 212, 191, 0.10), transparent)",
           }}
         />
         <Particles count={7} />
@@ -476,13 +462,12 @@ export default function Home() {
       </section>
 
       <section data-popup="cta" className="relative overflow-hidden">
-        <PromoOrb className="left-[9%] top-[26%]" size={34} />
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(860px 620px at 20% 10%, rgba(45, 212, 191, 0.26), transparent), radial-gradient(780px 600px at 85% 90%, rgba(99, 102, 241, 0.26), transparent)",
+              "radial-gradient(700px 500px at 20% 10%, rgba(45, 212, 191, 0.10), transparent), radial-gradient(600px 480px at 85% 90%, rgba(99, 102, 241, 0.10), transparent)",
           }}
         />
         <Particles count={8} />
