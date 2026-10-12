@@ -52,10 +52,11 @@ export default function PrivacyPage() {
             <li>
               <strong>From the Android companion app:</strong> text shown on-screen specifically within
               Gemini, ChatGPT, and Claude, captured via Android&apos;s Accessibility Service and sent to
-              the linked parent&apos;s TrustEd dashboard. It also reads Google search queries made in
-              Chrome: from Chrome it takes only the title of the page being shown (which, on a Google
-              results page, is the search itself) and ignores everything else — it does not read the
-              content of any website, what is typed on one, or any other tab. The service is scoped
+              the linked parent&apos;s TrustEd dashboard. It also reads Google searches made in
+              Chrome: it recognises a Google results page from the page&apos;s title (which is the search
+              itself), and only on such a page also reads the text Google shows on it — the AI Overview and
+              the results — so a parent can see what the child was shown. It does not read the content of
+              any other website, what is typed on one, or any other tab. The service is scoped
               to these three apps plus Chrome — it does not read any other app on the device.
             </li>
             <li>
@@ -70,10 +71,12 @@ export default function PrivacyPage() {
               pairing code in the extension, it reads the text already visible on screen — the
               student&apos;s typed message and the AI&apos;s reply — specifically on gemini.google.com,
               chatgpt.com, chat.openai.com, and claude.ai, and sends it to the linked parent&apos;s
-              TrustEd dashboard. It also reads the search query (the <code>q=</code> part of the web
-              address) on Google search results pages at google.com/search, and sends that query text
-              to the same dashboard — it does not read the search results, the contents of any page
-              you visit from them, or any other Google page. It does not read any other website, does
+              TrustEd dashboard. It also reads Google searches on google.com/search results pages: the search query (the{" "}
+              <code>q=</code> part of the web address) and a short summary of what Google showed back —
+              the text of Google&apos;s AI Overview when there is one, and the title, site name, and
+              snippet of the top few results. It does not send the addresses of result links, and does
+              not read any other Google page, the websites you open from the results, or anything else
+              in the browser. It does not read any other website, does
               not log keystrokes as they are typed, and does not take screenshots or record video; it
               only reads a message once it has actually been sent or received, and a search once it has
               actually been run. Before pairing, the extension does not read, store, or transmit any

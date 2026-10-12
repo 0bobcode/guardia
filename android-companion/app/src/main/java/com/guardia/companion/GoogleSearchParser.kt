@@ -15,6 +15,8 @@ object GoogleSearchParser {
     private const val URL_PREFIX = "https://www.google.com/search"
     private const val TITLE_SUFFIX = " - Google Search"
     private const val MAX_LENGTH = 500
+    private const val MAX_REPLY = 2000
+    private const val MIN_REPLY = 40
 
     fun queryFrom(pageText: String): String? {
         val text = pageText.trim()
@@ -24,6 +26,25 @@ object GoogleSearchParser {
             else -> null
         }
         return query?.trim()?.take(MAX_LENGTH)?.takeIf { it.isNotEmpty() }
+    }
+
+    /**
+     * Turns the visible text lines Chrome exposes on a Google results page
+     * into one compact reply: trimmed, consecutive repeats dropped, capped.
+     * Returns null when there isn't enough text to be a real results page.
+     */
+    fun replyFrom(lines: List<String>): String? {
+        val out = StringBuilder()
+        var last = ""
+        for (raw in lines) {
+            val line = raw.trim().replace(Regex("\\s+"), " ")
+            if (line.length < 2 || line == last) continue
+            if (out.length + line.length + 1 > MAX_REPLY) break
+            if (out.isNotEmpty()) out.append('\n')
+            out.append(line)
+            last = line
+        }
+        return out.toString().takeIf { it.length >= MIN_REPLY }
     }
 
     private fun queryParam(url: String): String? {

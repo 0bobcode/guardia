@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Guardia Companion</string>
-    <string name="accessibility_service_description">Guardia Companion reads text shown inside Gemini, ChatGPT, and Claude on this device, and the text of Google searches made in Chrome, and sends it to the linked parent\'s Guardia dashboard, so the parent can review it. In Chrome it reads only the search itself \u2014 never other websites or page content. It does not change what those apps say or do.</string>
+    <string name="accessibility_service_description">Guardia Companion reads text shown inside Gemini, ChatGPT, and Claude on this device, and Google searches made in Chrome along with what Google shows back on the results page, and sends it to the linked parent\'s Guardia dashboard, so the parent can review it. In Chrome it reads only Google results pages \u2014 never other websites or tabs. It does not change what those apps say or do.</string>
 </resources>

@@ -17,8 +17,9 @@ export const KNOWN_PACKAGES: Record<string, string> = {
   "chatgpt.com": "ChatGPT",
   "chat.openai.com": "ChatGPT",
   "claude.ai": "Claude",
-  // Google Search: the extension sends only the query text from a results
-  // page's ?q= parameter, never page content. Not an AI app — see appMetaForName.
+  // Google Search: the client sends the query (STUDENT) and a short summary of
+  // what Google showed back (ASSISTANT) — never other pages. Not an AI app,
+  // see appMetaForName.
   "google.com/search": "Google Search",
 };
 

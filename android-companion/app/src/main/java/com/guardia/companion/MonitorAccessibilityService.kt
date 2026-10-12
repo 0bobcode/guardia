@@ -9,7 +9,8 @@ import android.view.accessibility.AccessibilityNodeInfo
 /**
  * Reads text as it appears inside the monitored AI apps (configured in
  * accessibility_service_config.xml) and forwards it to the paired parent's
- * Guardia dashboard. In Chrome it reads only Google search queries. This is
+ * Guardia dashboard. In Chrome it reads only Google searches and what Google
+ * shows back on the results page, and nothing on any other page. This is
  * read-only: it cannot change what those apps display, block a reply, or
  * interact with them in any way.
  *
@@ -23,6 +24,7 @@ class MonitorAccessibilityService : AccessibilityService() {
     private val handler = Handler(Looper.getMainLooper())
     private val pendingRunnables = HashMap<String, Runnable>()
     private val lastSentText = HashMap<String, String>()
+    private var replyScheduledFor: String? = null
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event ?: return
@@ -57,7 +59,8 @@ class MonitorAccessibilityService : AccessibilityService() {
         if (Prefs.token(this) == null) return
         val root = rootInActiveWindow ?: return
         if (root.packageName?.toString() != CHROME_PACKAGE) return
-        val query = GoogleSearchParser.queryFrom(webViewText(root) ?: return) ?: return
+        val web = findWebView(root) ?: return
+        val query = GoogleSearchParser.queryFrom(web.text?.toString() ?: return) ?: return
 
         pendingRunnables[SEARCH_KEY]?.let { handler.removeCallbacks(it) }
         val runnable = Runnable {
@@ -68,19 +71,51 @@ class MonitorAccessibilityService : AccessibilityService() {
         }
         pendingRunnables[SEARCH_KEY] = runnable
         handler.postDelayed(runnable, DEBOUNCE_MS)
+
+        scheduleReply(query)
     }
 
-    /** Finds Chrome's page node and returns ONLY its own text (the page
-     *  title/URL). Other nodes are only looked at for their class name; no
-     *  other node's text — and nothing inside the page — is ever read. */
-    private fun webViewText(node: AccessibilityNodeInfo, depth: Int = 0): String? {
+    /** Once per search, a few seconds after it's first seen (so the results
+     *  have rendered), sends what Google showed back. This is the ONLY place
+     *  page text is read, and only inside a page already recognised as a
+     *  Google results page for this exact query. */
+    private fun scheduleReply(query: String) {
+        if (replyScheduledFor == query) return
+        replyScheduledFor = query
+        handler.postDelayed({
+            val token = Prefs.token(this) ?: return@postDelayed
+            val root = rootInActiveWindow ?: return@postDelayed
+            if (root.packageName?.toString() != CHROME_PACKAGE) return@postDelayed
+            val web = findWebView(root) ?: return@postDelayed
+            // The user moved on to something else — don't read that page.
+            if (GoogleSearchParser.queryFrom(web.text?.toString() ?: return@postDelayed) != query) return@postDelayed
+            val lines = ArrayList<String>()
+            collectVisibleText(web, lines, intArrayOf(0))
+            val reply = GoogleSearchParser.replyFrom(lines) ?: return@postDelayed
+            ApiClient.ingest(token, SEARCH_ID, "ASSISTANT", reply)
+        }, REPLY_DELAY_MS)
+    }
+
+    /** Finds Chrome's page node. Other nodes are only looked at for their
+     *  class name here. */
+    private fun findWebView(node: AccessibilityNodeInfo, depth: Int = 0): AccessibilityNodeInfo? {
         if (depth > MAX_TREE_DEPTH) return null
-        if (node.className?.toString() == "android.webkit.WebView") return node.text?.toString()
+        if (node.className?.toString() == "android.webkit.WebView") return node
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
-            webViewText(child, depth + 1)?.let { return it }
+            findWebView(child, depth + 1)?.let { return it }
         }
         return null
+    }
+
+    private fun collectVisibleText(node: AccessibilityNodeInfo, out: MutableList<String>, visited: IntArray, depth: Int = 0) {
+        if (depth > MAX_PAGE_DEPTH || visited[0] >= MAX_PAGE_NODES) return
+        visited[0]++
+        if (!node.isShowingHintText) node.text?.toString()?.takeIf { it.isNotBlank() }?.let { out.add(it) }
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            collectVisibleText(child, out, visited, depth + 1)
+        }
     }
 
     private fun maybeSend(pkg: String, role: String, text: String) {
@@ -139,6 +174,9 @@ class MonitorAccessibilityService : AccessibilityService() {
         // searches from both the same way.
         private const val SEARCH_ID = "google.com/search"
         private const val SEARCH_KEY = "chrome:google-search"
+        private const val REPLY_DELAY_MS = 3500L
+        private const val MAX_PAGE_DEPTH = 40
+        private const val MAX_PAGE_NODES = 600
         private val CHROME_STRINGS = listOf(
             "Ask Gemini",
             "Gemini can make mistakes, so double-check it",

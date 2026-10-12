@@ -34,4 +34,18 @@ class GoogleSearchParserTest {
 
     @Test fun capsVeryLongQueries() =
         assertEquals(500, GoogleSearchParser.queryFrom("https://www.google.com/search?q=" + "a".repeat(900))!!.length)
+
+    @Test fun replyDropsRepeatsAndJoinsLines() =
+        assertEquals(
+            "AI Overview\nVolcanoes erupt when magma rises.\nHow Volcanoes Work",
+            GoogleSearchParser.replyFrom(listOf("AI Overview", "  AI Overview ", "Volcanoes erupt when magma rises.", "x", "How Volcanoes Work"))
+        )
+
+    @Test fun replyNeedsEnoughTextToBeARealPage() =
+        assertNull(GoogleSearchParser.replyFrom(listOf("Search", "Images")))
+
+    @Test fun replyIsCapped() {
+        val lines = (1..200).map { "result line number $it with some text" }
+        assertEquals(true, GoogleSearchParser.replyFrom(lines)!!.length <= 2000)
+    }
 }
