@@ -17,8 +17,22 @@ export const KNOWN_PACKAGES: Record<string, string> = {
   "chatgpt.com": "ChatGPT",
   "chat.openai.com": "ChatGPT",
   "claude.ai": "Claude",
+  // Google Search: the extension sends only the query text from a results
+  // page's ?q= parameter, never page content. Not an AI app — see appMetaForName.
+  "google.com/search": "Google Search",
 };
 
 export function appNameForPackage(packageName: string): string | null {
   return KNOWN_PACKAGES[packageName] ?? null;
+}
+
+export type AppMeta = { subject: string; provider: string };
+
+/** How a newly seen tracked app is described when first created. */
+export function appMetaForName(appName: string): AppMeta {
+  if (appName === "Google Search") return { subject: "Web Search", provider: "search" };
+  return {
+    subject: "General AI Assistant",
+    provider: appName === "Gemini" ? "google" : appName === "ChatGPT" ? "openai" : "anthropic",
+  };
 }

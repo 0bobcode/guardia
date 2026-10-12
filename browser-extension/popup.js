@@ -22,7 +22,7 @@ function render(status) {
   if (status.paired) {
     statusDot.classList.add("on");
     statusText.textContent = `Paired with ${status.studentName}`;
-    subtitle.textContent = "Monitoring Gemini on this browser.";
+    subtitle.textContent = "Monitoring Gemini, ChatGPT, Claude and Google Search on this browser.";
     pairForm.style.display = "none";
     unpairSection.style.display = "block";
     unpairButton.textContent = "Unpair this browser";

@@ -67,11 +67,16 @@ export default function PrivacyPage() {
               pairing code in the extension, it reads the text already visible on screen — the
               student&apos;s typed message and the AI&apos;s reply — specifically on gemini.google.com,
               chatgpt.com, chat.openai.com, and claude.ai, and sends it to the linked parent&apos;s
-              TrustEd dashboard. It does not read any other website, does not log keystrokes as they
-              are typed, and does not take screenshots or record video; it only reads a message once
-              it has actually been sent or received. Before pairing, the extension does not read,
-              store, or transmit any page content. The extension stores only its pairing token locally
-              in the browser.
+              TrustEd dashboard. It also reads the search query (the <code>q=</code> part of the web
+              address) on Google search results pages at google.com/search, and sends that query text
+              to the same dashboard — it does not read the search results, the contents of any page
+              you visit from them, or any other Google page. It does not read any other website, does
+              not log keystrokes as they are typed, and does not take screenshots or record video; it
+              only reads a message once it has actually been sent or received, and a search once it has
+              actually been run. Before pairing, the extension does not read, store, or transmit any
+              page content or search. The extension stores only its pairing token locally in the
+              browser. Search queries are scanned against the same safety categories as AI messages
+              and are visible only to the linked parent and, for flagged items, the district.
             </li>
             <li>
               <strong>Policy configuration:</strong> the content-risk categories and custom policies a

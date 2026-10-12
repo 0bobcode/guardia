@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { scanText } from "@/lib/scanEngine";
-import { appNameForPackage } from "@/lib/devicePackages";
+import { appNameForPackage, appMetaForName } from "@/lib/devicePackages";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 import type { GradeBand, MessageRole } from "@prisma/client";
 
@@ -55,12 +55,7 @@ export async function POST(req: Request) {
   const app = await prisma.app.upsert({
     where: { districtId_name: { districtId: student.districtId, name: appName } },
     update: {},
-    create: {
-      districtId: student.districtId,
-      name: appName,
-      subject: "General AI Assistant",
-      provider: appName === "Gemini" ? "google" : appName === "ChatGPT" ? "openai" : "anthropic",
-    },
+    create: { districtId: student.districtId, name: appName, ...appMetaForName(appName) },
   });
 
   const gradeBand: GradeBand = student.gradeBand;

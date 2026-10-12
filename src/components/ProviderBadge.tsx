@@ -20,6 +20,8 @@ export function ProviderBadge({
   appName?: string;
   className?: string;
 }) {
+  // Not an AI model (e.g. Google Search) — there's no "via" to show.
+  if (provider === "search") return null;
   const label = providerShortLabel(provider);
   if (appName && appName === label) return null;
 
