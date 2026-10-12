@@ -9,8 +9,9 @@ import android.view.accessibility.AccessibilityNodeInfo
 /**
  * Reads text as it appears inside the monitored AI apps (configured in
  * accessibility_service_config.xml) and forwards it to the paired parent's
- * Guardia dashboard. This is read-only: it cannot change what those apps
- * display, block a reply, or interact with them in any way.
+ * Guardia dashboard. In Chrome it reads only Google search queries. This is
+ * read-only: it cannot change what those apps display, block a reply, or
+ * interact with them in any way.
  *
  * Content-changed events fire repeatedly while a reply is still streaming
  * in, so each (package, role) stream is debounced — only the text that's
@@ -29,8 +30,16 @@ class MonitorAccessibilityService : AccessibilityService() {
         // `text` is the window/activity title (e.g. the app's own name),
         // never message content. Real content arrives via the other two
         // configured event types as the conversation actually renders.
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val pkg = event.packageName?.toString() ?: return
+        if (pkg == CHROME_PACKAGE) {
+            // Chrome is a general web browser, so it must NEVER go through the
+            // generic text extraction below — that would read whatever page is
+            // open. It's handled separately and only ever yields a Google
+            // search query.
+            handleChrome()
+            return
+        }
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         if (Prefs.token(this) == null) return // not paired yet — nothing to send to
 
         val role = if (event.source?.isEditable == true) "STUDENT" else "ASSISTANT"
@@ -42,6 +51,36 @@ class MonitorAccessibilityService : AccessibilityService() {
         val runnable = Runnable { maybeSend(pkg, role, text) }
         pendingRunnables[streamKey] = runnable
         handler.postDelayed(runnable, DEBOUNCE_MS)
+    }
+
+    private fun handleChrome() {
+        if (Prefs.token(this) == null) return
+        val root = rootInActiveWindow ?: return
+        if (root.packageName?.toString() != CHROME_PACKAGE) return
+        val query = GoogleSearchParser.queryFrom(webViewText(root) ?: return) ?: return
+
+        pendingRunnables[SEARCH_KEY]?.let { handler.removeCallbacks(it) }
+        val runnable = Runnable {
+            if (lastSentText[SEARCH_KEY] == query) return@Runnable
+            lastSentText[SEARCH_KEY] = query
+            val token = Prefs.token(this) ?: return@Runnable
+            ApiClient.ingest(token, SEARCH_ID, "STUDENT", query)
+        }
+        pendingRunnables[SEARCH_KEY] = runnable
+        handler.postDelayed(runnable, DEBOUNCE_MS)
+    }
+
+    /** Finds Chrome's page node and returns ONLY its own text (the page
+     *  title/URL). Other nodes are only looked at for their class name; no
+     *  other node's text — and nothing inside the page — is ever read. */
+    private fun webViewText(node: AccessibilityNodeInfo, depth: Int = 0): String? {
+        if (depth > MAX_TREE_DEPTH) return null
+        if (node.className?.toString() == "android.webkit.WebView") return node.text?.toString()
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            webViewText(child, depth + 1)?.let { return it }
+        }
+        return null
     }
 
     private fun maybeSend(pkg: String, role: String, text: String) {
@@ -95,6 +134,11 @@ class MonitorAccessibilityService : AccessibilityService() {
     companion object {
         private const val DEBOUNCE_MS = 1200L
         private const val MAX_TREE_DEPTH = 12
+        private const val CHROME_PACKAGE = "com.android.chrome"
+        // Same identifier the browser extension uses, so the server treats
+        // searches from both the same way.
+        private const val SEARCH_ID = "google.com/search"
+        private const val SEARCH_KEY = "chrome:google-search"
         private val CHROME_STRINGS = listOf(
             "Ask Gemini",
             "Gemini can make mistakes, so double-check it",

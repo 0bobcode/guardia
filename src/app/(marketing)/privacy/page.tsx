@@ -52,8 +52,11 @@ export default function PrivacyPage() {
             <li>
               <strong>From the Android companion app:</strong> text shown on-screen specifically within
               Gemini, ChatGPT, and Claude, captured via Android&apos;s Accessibility Service and sent to
-              the linked parent&apos;s TrustEd dashboard. The service is scoped to only these three
-              apps — it does not read any other app on the device.
+              the linked parent&apos;s TrustEd dashboard. It also reads Google search queries made in
+              Chrome: from Chrome it takes only the title of the page being shown (which, on a Google
+              results page, is the search itself) and ignores everything else — it does not read the
+              content of any website, what is typed on one, or any other tab. The service is scoped
+              to these three apps plus Chrome — it does not read any other app on the device.
             </li>
             <li>
               <strong>From the iOS companion app:</strong> usage-time thresholds only (for example, 15,
