@@ -8,6 +8,13 @@ export const MAX_SESSION_MS = 15 * 60_000;
 export const STALE_FRAME_MS = 45_000;
 export const MAX_FRAME_BYTES = 400_000;
 
+// Not every live-view frame is kept for review — only a sample, roughly this
+// often — and even those are deleted automatically after this many days.
+// Both numbers are stated plainly in the consent prompt and privacy policy;
+// changing them here means updating that wording too.
+export const SAVED_FRAME_INTERVAL_MS = 10_000;
+export const SAVED_FRAME_RETENTION_DAYS = 30;
+
 export async function expireStale(studentId: string) {
   const now = Date.now();
   await prisma.screenShareSession.updateMany({
@@ -28,6 +35,15 @@ export async function expireStale(studentId: string) {
       ],
     },
     data: { status: "ENDED", endedAt: new Date(), endedBy: "TIMEOUT", lastFrame: null },
+  });
+
+  // Saved review photos are deleted after the stated retention window no
+  // matter what — this isn't conditional on anyone having looked at them.
+  await prisma.screenShareFrame.deleteMany({
+    where: {
+      session: { studentId },
+      capturedAt: { lt: new Date(now - SAVED_FRAME_RETENTION_DAYS * 24 * 60 * 60 * 1000) },
+    },
   });
 }
 

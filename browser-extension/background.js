@@ -162,7 +162,7 @@ function askChildForScreenShare(request) {
       type: "basic",
       iconUrl: "icons/icon128.png",
       title: "Allow your parent to view your screen?",
-      message: `${request.parentName} wants to see what's on your screen right now, just for this browser tab. You can say no.`,
+      message: `${request.parentName} wants to see what's on this tab right now. Photos will be saved for them to look at later too. You can say no.`,
       buttons: [{ title: "Allow" }, { title: "Decline" }],
       priority: 2,
       requireInteraction: true,

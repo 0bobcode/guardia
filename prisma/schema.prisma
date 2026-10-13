@@ -126,9 +126,10 @@ model DevicePairing {
 
 // A live screen view a parent asked for. The child's device must accept every
 // session (and the OS shows its own "sharing" indicator while it runs) — the
-// parent can never start one on their own. Only the single most recent frame
-// is kept, and it's deleted the moment the session ends; this row stays as a
-// history of who asked, when, for how long, and who ended it.
+// parent can never start one on their own. The child is told, in the consent
+// prompt itself, that pictures from the session are saved for the parent to
+// review afterward (see ScreenShareFrame) — this isn't a quietly-added extra,
+// it's part of what they're agreeing to each time.
 enum ScreenShareStatus {
   REQUESTED
   ACTIVE
@@ -145,7 +146,7 @@ model ScreenShareSession {
   endedAt     DateTime?
   // "PARENT" | "CHILD" | "TIMEOUT"
   endedBy     String?
-  lastFrame   Bytes?
+  lastFrame   Bytes? // the single live-view frame — overwritten continuously, gone once the session ends
   lastFrameAt DateTime?
   frameCount  Int               @default(0)
 
@@ -153,8 +154,25 @@ model ScreenShareSession {
   deviceId      String
   studentId     String
   student       Student @relation(fields: [studentId], references: [id])
+  frames        ScreenShareFrame[]
 
   @@index([studentId, requestedAt])
+}
+
+// A sampled still from a screen-share session, kept for the parent to review
+// after the session ends. Sampled roughly once every 10 seconds (not every
+// live-view frame) to keep storage reasonable, and auto-deleted after
+// SCREEN_FRAME_RETENTION_DAYS (src/lib/screenShare.ts) regardless of whether
+// anyone ever looks at them.
+model ScreenShareFrame {
+  id         String   @id @default(cuid())
+  image      Bytes
+  capturedAt DateTime @default(now())
+
+  sessionId String
+  session   ScreenShareSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, capturedAt])
 }
 
 // AI apps / platforms integrated with GuardRail (e.g. Tutorly AI, MathBot K-5)

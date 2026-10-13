@@ -76,13 +76,25 @@ export default function PrivacyPage() {
               the text of Google&apos;s AI Overview when there is one, and the title, site name, and
               snippet of the top few results. It does not send the addresses of result links, and does
               not read any other Google page, the websites you open from the results, or anything else
-              in the browser. It does not read any other website, does
-              not log keystrokes as they are typed, and does not take screenshots or record video; it
-              only reads a message once it has actually been sent or received, and a search once it has
-              actually been run. Before pairing, the extension does not read, store, or transmit any
+              in the browser. Outside of a screen view (below), it does not read any other website,
+              does not log keystrokes as they are typed, and does not take screenshots or record video;
+              it only reads a message once it has actually been sent or received, and a search once it
+              has actually been run. Before pairing, the extension does not read, store, or transmit any
               page content or search. The extension stores only its pairing token locally in the
               browser. Search queries are scanned against the same safety categories as AI messages
               and are visible only to the linked parent and, for flagged items, the district.
+            </li>
+            <li>
+              <strong>Screen views:</strong> a parent can ask, at any time, to see the student&apos;s
+              screen. Nothing is shared unless the student taps Allow on that specific request — each
+              request is separate, there is no standing permission, and the student can decline or stop
+              it at any point. While a view is active, a notice stays visible the whole time, and the
+              extension sends a picture of whatever tab is currently active, roughly once per second,
+              for up to 15 minutes or until it&apos;s stopped. Only the single most recent picture is
+              ever stored, and only while the view is active — it is deleted the instant the view ends,
+              is never saved to disk, and is never visible to anyone after the fact, including the
+              parent. A record is kept of when a view happened, how long it lasted, and how it ended —
+              never the pictures themselves.
             </li>
             <li>
               <strong>Policy configuration:</strong> the content-risk categories and custom policies a

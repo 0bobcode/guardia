@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type Status = "REQUESTED" | "ACTIVE" | "ENDED" | "DECLINED" | "EXPIRED";
@@ -74,7 +75,7 @@ export function ScreenViewer({ id, studentName, stopAction }: { id: string; stud
               <span className="h-2 w-2 rounded-full bg-red-400 animate-pulse" />
               Live · {name} allowed this · {Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}
             </span>
-            <span className="text-[10px] text-app-faint">About 1 picture per second · nothing is recorded</span>
+            <span className="text-[10px] text-app-faint">About 1 picture per second · some are saved for later</span>
           </div>
           <div className="bg-black flex items-center justify-center min-h-[240px]">
             {frameN > 0 ? (
@@ -102,7 +103,10 @@ export function ScreenViewer({ id, studentName, stopAction }: { id: string; stud
       {status === "ENDED" && (
         <div className="app-card rounded-xl p-6 text-center">
           <p className="text-sm font-semibold text-app-text">This screen view has ended.</p>
-          <p className="text-xs text-app-muted mt-1.5">{ENDED_TEXT[info?.endedBy ?? ""] ?? ""} No recording was kept.</p>
+          <p className="text-xs text-app-muted mt-1.5">{ENDED_TEXT[info?.endedBy ?? ""] ?? ""}</p>
+          <Link href={`/trusted/screen/${id}/photos`} className="mt-3 inline-block text-xs font-semibold text-app-teal hover:underline">
+            View saved photos →
+          </Link>
         </div>
       )}
 
