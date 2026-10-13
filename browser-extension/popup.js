@@ -13,6 +13,39 @@ const unpairButton = document.getElementById("unpairButton");
 
 let awaitingUnpairConfirm = false;
 
+const screenShareSection = document.getElementById("screenShareSection");
+const screenShareNoPasscode = document.getElementById("screenShareNoPasscode");
+const screenShareNeedsPasscode = document.getElementById("screenShareNeedsPasscode");
+const screenSharePasscode = document.getElementById("screenSharePasscode");
+const screenShareError = document.getElementById("screenShareError");
+
+function refreshScreenShare() {
+  chrome.runtime.sendMessage({ type: "GUARDIA_SCREEN_STATUS" }, (status) => {
+    if (!status?.active) {
+      screenShareSection.style.display = "none";
+      return;
+    }
+    screenShareSection.style.display = "block";
+    screenShareNoPasscode.style.display = status.needsPasscode ? "none" : "block";
+    screenShareNeedsPasscode.style.display = status.needsPasscode ? "block" : "none";
+  });
+}
+
+function doStopScreenShare(passcode) {
+  screenShareError.style.display = "none";
+  chrome.runtime.sendMessage({ type: "GUARDIA_SCREEN_STOP", passcode }, (result) => {
+    if (!result?.ok) {
+      screenShareError.textContent = result?.error || "Couldn't stop it.";
+      screenShareError.style.display = "block";
+      return;
+    }
+    refreshScreenShare();
+  });
+}
+
+document.getElementById("stopScreenShareButton").addEventListener("click", () => doStopScreenShare());
+document.getElementById("stopScreenShareButton2").addEventListener("click", () => doStopScreenShare(screenSharePasscode.value));
+
 function render(status) {
   awaitingUnpairConfirm = false;
   unpairPrompt.style.display = "none";
@@ -54,6 +87,8 @@ pairButton.addEventListener("click", () => {
       return;
     }
     refresh();
+refreshScreenShare();
+setInterval(refreshScreenShare, 2000);
   });
 });
 

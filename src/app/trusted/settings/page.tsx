@@ -7,6 +7,7 @@ import { OsUpdateCard } from "@/components/OsUpdateCard";
 import { compareVersions, DEFAULT_VERSION } from "@/lib/osVersion";
 import { providerLabel, providerShortLabel } from "@/lib/aiProviders";
 import { formatDateTime } from "@/lib/format";
+import { requestScreenShareAction } from "../screen/actions";
 import {
   updateDailyLimitAction,
   addChildAction,
@@ -33,6 +34,7 @@ const ERRORS: Record<string, string> = {
   childpassword: "Password must be at least 6 characters.",
   noapp: "Choose an app to add.",
   unpairpassword: "Unpair password must be at least 4 characters.",
+  noscreendevice: "Pair a device first — screen viewing needs the child's phone linked to TrustEd.",
 };
 
 export default async function TrustedSettingsPage({
@@ -249,12 +251,22 @@ export default async function TrustedSettingsPage({
                       </form>
                     </div>
                     {d.pairedAt && (
+                      <form action={requestScreenShareAction} className="mt-2 pt-2 border-t border-app-border/60 flex items-center justify-between gap-2">
+                        <input type="hidden" name="studentId" value={student.id} />
+                        <input type="hidden" name="deviceId" value={d.id} />
+                        <span className="text-app-faint">View their screen — only if they allow it, each time.</span>
+                        <button type="submit" className="shrink-0 font-semibold text-app-teal border border-app-teal/40 rounded px-2.5 py-1 hover:bg-app-teal/10 transition-colors">
+                          Ask to view screen
+                        </button>
+                      </form>
+                    )}
+                    {d.pairedAt && (
                       <form action={setUnpairPasswordAction} className="flex items-center gap-1.5 mt-2 pt-2 border-t border-app-border/60">
                         <input type="hidden" name="pairingId" value={d.id} />
                         <input
                           name="unpairPassword"
                           type="password"
-                          placeholder={d.unpairPasswordHash ? "Change unpair password" : "Set unpair password"}
+                          placeholder={d.unpairPasswordHash ? "Change Screen Time passcode" : "Set Screen Time passcode"}
                           className="app-input flex-1 min-w-0 rounded-md px-2 py-1 text-xs text-app-text"
                         />
                         <button
@@ -264,7 +276,7 @@ export default async function TrustedSettingsPage({
                           Save
                         </button>
                         {d.unpairPasswordHash && (
-                          <span className="text-app-faint shrink-0" title="Extension requires this password to unpair">
+                          <span className="text-app-faint shrink-0" title="Needed to unpair this device or to end a screen view early">
                             🔒 set
                           </span>
                         )}

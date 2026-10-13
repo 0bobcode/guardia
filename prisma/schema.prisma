@@ -99,6 +99,7 @@ model Student {
   consentRequests ConsentRequest[]
   aiSessions     AiSession[]
   devicePairings DevicePairing[]
+  screenShares   ScreenShareSession[]
 }
 
 // A phone enrolled in TrustEd's device monitor. Created unpaired (a short
@@ -121,6 +122,39 @@ model DevicePairing {
 
   studentId String
   student   Student @relation(fields: [studentId], references: [id])
+}
+
+// A live screen view a parent asked for. The child's device must accept every
+// session (and the OS shows its own "sharing" indicator while it runs) — the
+// parent can never start one on their own. Only the single most recent frame
+// is kept, and it's deleted the moment the session ends; this row stays as a
+// history of who asked, when, for how long, and who ended it.
+enum ScreenShareStatus {
+  REQUESTED
+  ACTIVE
+  ENDED
+  DECLINED
+  EXPIRED
+}
+
+model ScreenShareSession {
+  id          String            @id @default(cuid())
+  status      ScreenShareStatus @default(REQUESTED)
+  requestedAt DateTime          @default(now())
+  respondedAt DateTime?
+  endedAt     DateTime?
+  // "PARENT" | "CHILD" | "TIMEOUT"
+  endedBy     String?
+  lastFrame   Bytes?
+  lastFrameAt DateTime?
+  frameCount  Int               @default(0)
+
+  requestedById String
+  deviceId      String
+  studentId     String
+  student       Student @relation(fields: [studentId], references: [id])
+
+  @@index([studentId, requestedAt])
 }
 
 // AI apps / platforms integrated with GuardRail (e.g. Tutorly AI, MathBot K-5)

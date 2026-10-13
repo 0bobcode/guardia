@@ -110,6 +110,22 @@
     <button id="pairButton">Pair device</button>
   </div>
 
+  <div id="screenShareSection" style="display: none; margin-bottom: 14px; padding: 10px; border: 1px solid rgba(239,68,68,0.4); border-radius: 8px; background: rgba(239,68,68,0.08);">
+    <div style="display:flex; align-items:center; gap:6px; margin-bottom: 6px;">
+      <span class="dot" style="background:#ef4444;"></span>
+      <strong style="font-size:12px;">Your screen is being shared</strong>
+    </div>
+    <div id="screenShareNoPasscode">
+      <button id="stopScreenShareButton" class="outline">Stop sharing</button>
+    </div>
+    <div id="screenShareNeedsPasscode" style="display:none;">
+      <label for="screenSharePasscode">Ask your parent for the Screen Time passcode to stop it now</label>
+      <input id="screenSharePasscode" type="password" placeholder="Passcode" />
+      <p class="error" id="screenShareError" style="display: none;"></p>
+      <button id="stopScreenShareButton2" class="outline">Stop sharing</button>
+    </div>
+  </div>
+
   <div id="unpairSection" style="display: none;">
     <div id="unpairPrompt" style="display: none;">
       <label for="unpairPassword">Unpair password (if one is set)</label>

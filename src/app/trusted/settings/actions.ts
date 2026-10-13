@@ -98,6 +98,8 @@ export async function removeChildAction(formData: FormData) {
   await prisma.consentRequest.deleteMany({ where: { studentId } });
   await prisma.scanEvent.deleteMany({ where: { studentId } });
   await prisma.studentAppEnrollment.deleteMany({ where: { studentId } });
+  await prisma.screenShareSession.deleteMany({ where: { studentId } });
+  await prisma.devicePairing.deleteMany({ where: { studentId } });
   await prisma.student.delete({ where: { id: studentId } });
 
   revalidatePath("/trusted/settings");

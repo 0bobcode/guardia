@@ -1,3 +1,5 @@
+import { initScreenShare, stopScreenShareFromPopup, screenShareStatus } from "./screenShare.js";
+
 const BASE_URL = "https://guardia-seven.vercel.app";
 
 async function getToken() {
@@ -70,5 +72,15 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     tryUnpair(message.password).then(sendResponse);
     return true;
   }
+  if (message.type === "GUARDIA_SCREEN_STATUS") {
+    sendResponse(screenShareStatus());
+    return false;
+  }
+  if (message.type === "GUARDIA_SCREEN_STOP") {
+    stopScreenShareFromPopup(message.passcode).then(sendResponse);
+    return true;
+  }
   return false;
 });
+
+initScreenShare();
