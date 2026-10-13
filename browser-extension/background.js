@@ -1,5 +1,12 @@
 console.log("[Guardia] background service worker loaded");
 
+// A visible-without-DevTools sign that this script actually ran: a small
+// green dot on the toolbar icon. Cleared the instant anything else sets the
+// badge (pairing status, LIVE sharing), so it only ever means "the script
+// started, nothing else has happened yet" — not an ongoing status.
+chrome.action.setBadgeText({ text: "•" });
+chrome.action.setBadgeBackgroundColor({ color: "#22c55e" });
+
 const BASE_URL = "https://guardia-seven.vercel.app";
 
 async function getToken() {
