@@ -144,17 +144,31 @@ async function pollForScreenRequest() {
   }
 }
 
+function logNotificationResult(label) {
+  return (notificationId) => {
+    if (chrome.runtime.lastError) {
+      screenLog(`${label} FAILED:`, chrome.runtime.lastError.message);
+    } else {
+      screenLog(`${label} created ok, id=${notificationId}`);
+    }
+  };
+}
+
 function askChildForScreenShare(request) {
   screenLog("showing consent notification for request", request.id);
-  chrome.notifications.create(NOTIF_ASK, {
-    type: "basic",
-    iconUrl: "icons/icon128.png",
-    title: "Allow your parent to view your screen?",
-    message: `${request.parentName} wants to see what's on your screen right now, just for this browser tab. You can say no.`,
-    buttons: [{ title: "Allow" }, { title: "Decline" }],
-    priority: 2,
-    requireInteraction: true,
-  });
+  chrome.notifications.create(
+    NOTIF_ASK,
+    {
+      type: "basic",
+      iconUrl: "icons/icon128.png",
+      title: "Allow your parent to view your screen?",
+      message: `${request.parentName} wants to see what's on your screen right now, just for this browser tab. You can say no.`,
+      buttons: [{ title: "Allow" }, { title: "Decline" }],
+      priority: 2,
+      requireInteraction: true,
+    },
+    logNotificationResult("ask notification")
+  );
 }
 
 function startCapturing(sessionId, needsPasscode) {
@@ -164,17 +178,21 @@ function startCapturing(sessionId, needsPasscode) {
   activeNeedsPasscode = needsPasscode;
   chrome.action.setBadgeText({ text: "LIVE" });
   chrome.action.setBadgeBackgroundColor({ color: "#ef4444" });
-  chrome.notifications.create(NOTIF_LIVE, {
-    type: "basic",
-    iconUrl: "icons/icon128.png",
-    title: "Your parent is viewing this tab",
-    message: needsPasscode
-      ? "It will stop on its own soon. Ask your parent for the Screen Time passcode to stop it sooner."
-      : "Click Stop sharing to end it whenever you want.",
-    buttons: needsPasscode ? undefined : [{ title: "Stop sharing" }],
-    priority: 2,
-    requireInteraction: true,
-  });
+  chrome.notifications.create(
+    NOTIF_LIVE,
+    {
+      type: "basic",
+      iconUrl: "icons/icon128.png",
+      title: "Your parent is viewing this tab",
+      message: needsPasscode
+        ? "It will stop on its own soon. Ask your parent for the Screen Time passcode to stop it sooner."
+        : "Click Stop sharing to end it whenever you want.",
+      buttons: needsPasscode ? undefined : [{ title: "Stop sharing" }],
+      priority: 2,
+      requireInteraction: true,
+    },
+    logNotificationResult("live notification")
+  );
   captureOnce();
   captureTimer = setInterval(captureOnce, CAPTURE_INTERVAL_MS);
 }
@@ -262,6 +280,15 @@ chrome.notifications.onButtonClicked.addListener(async (notifId, buttonIndex) =>
 
 function initScreenShare() {
   screenLog("starting up");
+  // Chrome's own, authoritative read of whether it can show a notification
+  // right now — independent of what any settings panel appears to say.
+  chrome.notifications.getPermissionLevel((level) => {
+    screenLog("notification permission level:", level);
+    if (level !== "granted") {
+      chrome.action.setBadgeText({ text: "OFF" });
+      chrome.action.setBadgeBackgroundColor({ color: "#eab308" });
+    }
+  });
   chrome.alarms.create(POLL_ALARM, { periodInMinutes: 1 });
   chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === POLL_ALARM) {

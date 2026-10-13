@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Guardia Companion",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Reports Gemini/ChatGPT/Claude chats, Google searches, and parent-requested screen views (with the child's consent each time) to a linked parent's dashboard.",
   "icons": {
     "16": "icons/icon16.png",
